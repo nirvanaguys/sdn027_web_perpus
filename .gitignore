@@ -1,0 +1,30 @@
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backend (Laravel API)
+/library-api/vendor/
+/library-api/.env
+/library-api/.env.backup
+/library-api/.env.production
+/library-api/storage/logs/*.log
+/library-api/storage/framework/cache/data/*
+/library-api/storage/framework/sessions/*
+/library-api/storage/framework/views/*
+/library-api/bootstrap/cache/*.php
+/library-api/database/*.sqlite
+/library-api/database/*.sqlite-journal
+
+# Frontend (Vue 3 / Vite)
+/library-frontend/node_modules/
+/library-frontend/dist/
+/library-frontend/dist-ssr/
+/library-frontend/*.local
+/library-frontend/.vite/
+/library-frontend/.vite-temp/
+/library-frontend/logs
+/library-frontend/*.log
