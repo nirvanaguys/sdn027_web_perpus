@@ -13,7 +13,7 @@
             {{ isRegister ? 'Daftar Anggota Baru' : 'Selamat Datang Kembali' }}
           </h2>
           <p class="text-xs sm:text-sm text-slate-500 mt-1">
-            {{ isRegister ? 'Buat akun untuk mulai meminjam koleksi buku' : 'Akses akun sistem perpustakaan PustakaKu' }}
+            {{ isRegister ? 'Buat akun untuk mulai meminjam koleksi buku' : 'Akses akun sistem perpustakaan Perpusku' }}
           </p>
         </div>
 
