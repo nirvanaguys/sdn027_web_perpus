@@ -248,11 +248,12 @@ const handleLogin = async () => {
     authStore.setAuth(user, token);
     toastStore.success(`Selamat datang kembali, ${user.name}!`);
 
-    if (user.role === 'admin') {
+    if (route.query.redirect) {
+      router.push(route.query.redirect);
+    } else if (user.role === 'admin') {
       router.push('/admin/books');
     } else {
-      const redirect = route.query.redirect || '/';
-      router.push(redirect);
+      router.push('/');
     }
   } catch (err) {
     const msg = err.response?.data?.message || 'Login gagal. Periksa kembali email dan kata sandi Anda.';
@@ -280,7 +281,7 @@ const handleRegister = async () => {
     const { user, token } = res.data.data;
     authStore.setAuth(user, token);
     toastStore.success(`Pendaftaran berhasil! Selamat bergabung, ${user.name}.`);
-    router.push('/');
+    router.push(route.query.redirect || '/');
   } catch (err) {
     const msg = err.response?.data?.message || 'Registrasi gagal. Mohon periksa kembali data Anda.';
     toastStore.error(msg);

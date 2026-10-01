@@ -20,7 +20,7 @@
             <span
               class="hidden sm:block text-[11px] font-medium text-slate-400 tracking-wider uppercase"
             >
-              Perpustakaan SDN 027 Balikpapan Utara
+              Perpustakaan Digital SDN 027 Balikpapan Utara
             </span>
           </div>
         </router-link>
@@ -39,31 +39,10 @@
             "
           >
             <Library class="w-4 h-4" />
-            <span>Katalog Buku</span>
+            <span>Katalog Ebook</span>
           </router-link>
 
-          <!-- Member: My Loans -->
-          <router-link
-            v-if="authStore.isAuthenticated() && !authStore.isAdmin()"
-            to="/my-loans"
-            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
-            :class="
-              $route.path === '/my-loans'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-            "
-          >
-            <Bookmark class="w-4 h-4" />
-            <span>Buku Saya</span>
-            <span
-              v-if="activeLoansCount > 0"
-              class="ml-1 px-1.5 py-0.5 text-xs font-bold rounded-full bg-indigo-600 text-white"
-            >
-              {{ activeLoansCount }}
-            </span>
-          </router-link>
-
-          <!-- Admin: Inventory -->
+          <!-- Admin: Collection Management -->
           <router-link
             v-if="authStore.isAdmin()"
             to="/admin/books"
@@ -75,7 +54,7 @@
             "
           >
             <ShieldCheck class="w-4 h-4" />
-            <span>Kelola Inventaris</span>
+            <span>Kelola Koleksi</span>
           </router-link>
         </nav>
 
@@ -171,22 +150,7 @@
           "
         >
           <Library class="w-5 h-5" />
-          <span>Katalog Buku</span>
-        </router-link>
-
-        <router-link
-          v-if="authStore.isAuthenticated() && !authStore.isAdmin()"
-          @click="mobileMenuOpen = false"
-          to="/my-loans"
-          class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition"
-          :class="
-            $route.path === '/my-loans'
-              ? 'bg-indigo-50 text-indigo-600'
-              : 'text-slate-700 hover:bg-slate-50'
-          "
-        >
-          <Bookmark class="w-5 h-5" />
-          <span>Buku Saya</span>
+          <span>Katalog Ebook</span>
         </router-link>
 
         <router-link
@@ -196,7 +160,7 @@
           class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-indigo-600 text-white"
         >
           <ShieldCheck class="w-5 h-5" />
-          <span>Dashboard Admin</span>
+          <span>Kelola Koleksi</span>
         </router-link>
 
         <div class="pt-3 border-t border-slate-100">
@@ -241,7 +205,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { authStore } from "../stores/auth";
 import { toastStore } from "../stores/toast";
@@ -249,7 +213,6 @@ import api from "../services/api";
 import {
   BookOpen,
   Library,
-  Bookmark,
   ShieldCheck,
   User,
   LogOut,
@@ -260,7 +223,6 @@ import {
 const router = useRouter();
 const route = useRoute();
 const mobileMenuOpen = ref(false);
-const activeLoansCount = ref(0);
 
 const getUserInitials = () => {
   const name = authStore.user?.name || "User";
@@ -272,33 +234,12 @@ const getUserInitials = () => {
     .toUpperCase();
 };
 
-const fetchLoansCount = async () => {
-  if (authStore.isAuthenticated() && !authStore.isAdmin()) {
-    try {
-      const res = await api.get("/transactions/my");
-      const loans = res.data.data || [];
-      activeLoansCount.value = loans.filter(
-        (l) => l.status === "borrowed",
-      ).length;
-    } catch {
-      activeLoansCount.value = 0;
-    }
-  } else {
-    activeLoansCount.value = 0;
-  }
-};
-
 watch(
   () => route.path,
   () => {
     mobileMenuOpen.value = false;
-    fetchLoansCount();
-  },
+  }
 );
-
-onMounted(() => {
-  fetchLoansCount();
-});
 
 const handleLogout = async () => {
   try {

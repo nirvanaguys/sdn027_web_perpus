@@ -13,21 +13,22 @@
         class="absolute -bottom-10 right-1/4 w-96 h-96 bg-violet-500/15 rounded-full blur-3xl pointer-events-none"
       ></div>
 
-      <div class="absolute inset-0 bg-black/40 pointer-events-none"></div>
+      <div class="absolute inset-0 bg-black/50 pointer-events-none"></div>
 
       <div class="relative max-w-5xl mx-auto text-center space-y-6 z-10">
         <!-- Badge -->
         <div
           class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-indigo-300 text-xs font-semibold tracking-wide shadow-inner"
         >
-          <span>Sistem Manajemen Perpustakaan Terpadu</span>
+          <Sparkles class="w-3.5 h-3.5" />
+          <span>Perpustakaan Ebook Digital Terpadu</span>
         </div>
 
         <!-- Headline -->
         <h1
           class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-indigo-200"
         >
-          Perpustakaan Resmi
+          Akses Ribuan Bacaan Digital
           <br class="hidden sm:block" />
           SDN 027 Balikpapan Utara
         </h1>
@@ -35,7 +36,9 @@
         <!-- Subtitle -->
         <p
           class="max-w-2xl mx-auto text-slate-300 text-sm sm:text-base leading-relaxed"
-        ></p>
+        >
+          Jelajahi koleksi ebook dalam format PDF dan EPUB. Baca langsung di peramban web Anda secara cepat, nyaman, dan responsif.
+        </p>
 
         <!-- Prominent Search Bar -->
         <div class="max-w-2xl mx-auto pt-2">
@@ -49,7 +52,7 @@
               v-model="searchQuery"
               @input="handleSearch"
               type="text"
-              placeholder="Cari judul buku, nama penulis, penerbit, atau ISBN..."
+              placeholder="Cari judul ebook, nama penulis, penerbit, atau ISBN..."
               class="w-full px-3.5 py-2.5 bg-transparent text-white placeholder-slate-400 text-sm outline-none"
             />
             <button
@@ -68,23 +71,15 @@
         >
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span
-              >Total <strong>{{ allBooks.length }}</strong> Judul
-              Terdaftar</span
-            >
+            <span>Total <strong>{{ allBooks.length }}</strong> Koleksi Ebook</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+            <span><strong>{{ pdfCount }}</strong> Ebook PDF</span>
           </div>
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-            <span
-              ><strong>{{ availableBooksCount }}</strong> Buku Siap
-              Dipinjam</span
-            >
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-            <span
-              ><strong>{{ uniqueShelvesCount }}</strong> Lokasi Rak Fisik</span
-            >
+            <span><strong>{{ epubCount }}</strong> Ebook EPUB</span>
           </div>
         </div>
       </div>
@@ -98,17 +93,17 @@
       <div
         class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4"
       >
-        <!-- Stock Filter Tabs -->
+        <!-- Format Filter Tabs -->
         <div
           class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0"
         >
           <button
-            v-for="filter in filterOptions"
+            v-for="filter in formatFilterOptions"
             :key="filter.value"
-            @click="selectedFilter = filter.value"
+            @click="selectedFormat = filter.value"
             class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition cursor-pointer"
             :class="
-              selectedFilter === filter.value
+              selectedFormat === filter.value
                 ? 'bg-indigo-600 text-white shadow-sm'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             "
@@ -117,28 +112,18 @@
           </button>
         </div>
 
-        <!-- Dropdown Filters: Category & Shelf Location -->
+        <!-- Dropdown Filter: Category -->
         <div
-          class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end"
+          class="flex items-center gap-2 w-full sm:w-auto justify-end"
         >
           <Filter class="w-4 h-4 text-slate-400 shrink-0" />
           <select
             v-model="selectedCategory"
-            class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700 font-medium focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+            class="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700 font-medium focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
           >
             <option value="">Semua Kategori</option>
             <option v-for="cat in uniqueCategories" :key="cat" :value="cat">
               {{ cat }}
-            </option>
-          </select>
-
-          <select
-            v-model="selectedShelf"
-            class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700 font-medium focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
-          >
-            <option value="">Semua Lokasi Rak</option>
-            <option v-for="shelf in uniqueShelves" :key="shelf" :value="shelf">
-              Rak: {{ shelf }}
             </option>
           </select>
         </div>
@@ -171,9 +156,9 @@
         >
           <BookOpen class="w-8 h-8 opacity-70" />
         </div>
-        <h3 class="text-lg font-bold text-slate-900">Buku tidak ditemukan</h3>
+        <h3 class="text-lg font-bold text-slate-900">Ebook tidak ditemukan</h3>
         <p class="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-          Tidak ada koleksi yang cocok dengan filter atau kata kunci "{{
+          Tidak ada koleksi ebook yang cocok dengan filter atau kata kunci "{{
             searchQuery
           }}".
         </p>
@@ -207,28 +192,25 @@
             ></div>
 
             <div class="flex items-start justify-between z-10">
+              <!-- Format Badge (PDF / EPUB) -->
               <span
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-black/25 backdrop-blur-md"
-              >
-                <MapPin class="w-3.5 h-3.5" />
-                <span>{{ book.shelf_location }}</span>
-              </span>
-
-              <!-- Live Stock Indicator Pill -->
-              <span
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold shadow-xs backdrop-blur-md"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-xs"
                 :class="
-                  book.stock > 0
-                    ? 'bg-emerald-500/90 text-white'
-                    : 'bg-rose-500/90 text-white'
+                  (book.file_format || '').toLowerCase() === 'pdf'
+                    ? 'bg-rose-500/90 text-white'
+                    : 'bg-indigo-900/80 text-white'
                 "
               >
-                <span
-                  class="w-1.5 h-1.5 rounded-full bg-white animate-ping"
-                ></span>
-                <span>{{
-                  book.stock > 0 ? `${book.stock} Ada` : "Habis"
-                }}</span>
+                <FileText class="w-3.5 h-3.5" />
+                <span>{{ (book.file_format || 'PDF').toUpperCase() }}</span>
+              </span>
+
+              <!-- Digital Read Ready Badge -->
+              <span
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/90 text-white backdrop-blur-md"
+              >
+                <CheckCircle2 class="w-3 h-3" />
+                <span>Siap Baca</span>
               </span>
             </div>
 
@@ -238,6 +220,9 @@
                 class="font-mono text-[11px] text-white/80 bg-black/20 px-2 py-0.5 rounded-md"
               >
                 ISBN: {{ book.isbn }}
+              </span>
+              <span v-if="book.file_size_formatted" class="text-[11px] text-white/80 bg-black/20 px-2 py-0.5 rounded-md">
+                {{ book.file_size_formatted }}
               </span>
             </div>
           </div>
@@ -275,7 +260,7 @@
               </div>
             </div>
 
-            <!-- Action Area -->
+            <!-- Action Area: Detail & Baca Online -->
             <div class="mt-auto pt-5 grid grid-cols-2 gap-2">
               <button
                 @click="openDetail(book)"
@@ -286,17 +271,11 @@
               </button>
 
               <button
-                @click="askBorrowBook(book)"
-                :disabled="book.stock === 0"
-                class="py-2.5 px-3 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                :class="
-                  book.stock > 0
-                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/20'
-                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                "
+                @click="handleReadBook(book)"
+                class="py-2.5 px-3 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/20"
               >
                 <BookOpen class="w-3.5 h-3.5" />
-                <span>{{ book.stock > 0 ? "Pinjam" : "Kosong" }}</span>
+                <span>Baca Ebook</span>
               </button>
             </div>
           </div>
@@ -304,7 +283,7 @@
       </div>
     </main>
 
-    <!-- Modal Detail Buku -->
+    <!-- Modal Detail Ebook -->
     <transition
       enter-active-class="ease-out duration-200"
       enter-from-class="opacity-0"
@@ -332,10 +311,10 @@
               <X class="w-5 h-5" />
             </button>
             <span
-              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-black/30 mb-3"
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-black/30 mb-3"
             >
-              <MapPin class="w-3.5 h-3.5" />
-              Rak: {{ selectedDetailBook.shelf_location }}
+              <FileText class="w-3.5 h-3.5" />
+              <span>Format: {{ (selectedDetailBook.file_format || 'PDF').toUpperCase() }}</span>
             </span>
             <h2 class="text-xl font-bold leading-snug">
               {{ selectedDetailBook.title }}
@@ -346,6 +325,7 @@
           </div>
 
           <div class="p-6 space-y-4">
+            <!-- Book Metadata -->
             <div
               class="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs"
             >
@@ -369,32 +349,25 @@
                 >
               </div>
               <div>
-                <span class="text-slate-400 block mb-0.5">Stok Fisik</span>
-                <span
-                  class="font-bold inline-block px-2 py-0.5 rounded-md"
-                  :class="
-                    selectedDetailBook.stock > 0
-                      ? 'bg-emerald-100 text-emerald-800'
-                      : 'bg-rose-100 text-rose-800'
-                  "
-                >
-                  {{ selectedDetailBook.stock }} Eksemplar
-                </span>
+                <span class="text-slate-400 block mb-0.5">Ukuran File</span>
+                <strong class="text-slate-800 text-sm font-semibold">
+                  {{ selectedDetailBook.file_size_formatted || 'Tersedia' }}
+                </strong>
               </div>
-              <div class="col-span-2">
-                <span class="text-slate-400 block mb-0.5">Masa Pinjam</span>
-                <strong class="text-slate-800 text-sm font-semibold"
-                  >7 Hari Kalender</strong
-                >
-              </div>
+            </div>
+
+            <!-- Description -->
+            <div v-if="selectedDetailBook.description" class="space-y-1">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sinopsis / Deskripsi:</span>
+              <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+                {{ selectedDetailBook.description }}
+              </p>
             </div>
 
             <div
               class="text-xs text-slate-500 leading-relaxed bg-indigo-50/60 p-3.5 rounded-xl border border-indigo-100/80"
             >
-              💡 <strong>Ketentuan Sirkulasi:</strong> Anggota dapat meminjam
-              buku fisik ini langsung di rak perpustakaan. Pengembalian dapat
-              dilakukan melalui menu <em>Buku Saya</em>.
+              📖 <strong>Akses Membaca:</strong> Ebook ini dapat dibaca langsung secara online menggunakan pembaca terintegrasi. Anda wajib masuk (login) untuk membuka isi dokumen.
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2">
@@ -407,39 +380,17 @@
               </button>
               <button
                 type="button"
-                @click="askBorrowBook(selectedDetailBook)"
-                :disabled="selectedDetailBook.stock === 0"
-                class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition flex items-center gap-2 cursor-pointer shadow-md shadow-indigo-600/20"
-                :class="
-                  selectedDetailBook.stock > 0
-                    ? 'bg-indigo-600 hover:bg-indigo-700'
-                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                "
+                @click="handleReadBook(selectedDetailBook)"
+                class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition flex items-center gap-2 cursor-pointer shadow-md shadow-indigo-600/20"
               >
                 <BookOpen class="w-4 h-4" />
-                <span>{{
-                  selectedDetailBook.stock > 0
-                    ? "Pinjam Buku Ini"
-                    : "Stok Tidak Tersedia"
-                }}</span>
+                <span>Baca Ebook Sekarang</span>
               </button>
             </div>
           </div>
         </div>
       </div>
     </transition>
-
-    <!-- Confirmation Modal Reusable -->
-    <ConfirmModal
-      :isOpen="showConfirmModal"
-      title="Konfirmasi Peminjaman Buku"
-      :message="`Apakah Anda yakin ingin meminjam buku '${bookToBorrow?.title}'? Batas pengembalian adalah 7 hari dari sekarang.`"
-      confirmText="Ya, Pinjam Sekarang"
-      cancelText="Batalkan"
-      :loading="borrowing"
-      @confirm="executeBorrow"
-      @cancel="showConfirmModal = false"
-    />
   </div>
 </template>
 
@@ -449,41 +400,36 @@ import { useRouter } from "vue-router";
 import api from "../services/api";
 import { authStore } from "../stores/auth";
 import { toastStore } from "../stores/toast";
-import ConfirmModal from "../components/ConfirmModal.vue";
 import {
   Sparkles,
   Search,
   X,
   BookOpen,
-  MapPin,
   User,
   Bookmark,
   Filter,
   Eye,
   RotateCcw,
+  FileText,
+  CheckCircle2,
 } from "lucide-vue-next";
-// Use the actual path where you placed the image
 import schoolImg from "../assets/library-frontend/sd027.jpg";
 
 const router = useRouter();
 const allBooks = ref([]);
 const searchQuery = ref("");
-const selectedFilter = ref("all");
+const selectedFormat = ref("all");
 const selectedCategory = ref("");
-const selectedShelf = ref("");
 const loading = ref(false);
 
 const selectedDetailBook = ref(null);
-const showConfirmModal = ref(false);
-const bookToBorrow = ref(null);
-const borrowing = ref(false);
 
 let debounceTimer = null;
 
-const filterOptions = [
-  { label: "Semua Koleksi", value: "all" },
-  { label: "Tersedia Saja", value: "available" },
-  { label: "Stok Habis", value: "out_of_stock" },
+const formatFilterOptions = [
+  { label: "Semua Format", value: "all" },
+  { label: "PDF", value: "pdf" },
+  { label: "EPUB", value: "epub" },
 ];
 
 const gradients = [
@@ -508,7 +454,7 @@ const fetchBooks = async () => {
     allBooks.value = res.data.data.data || [];
   } catch (error) {
     console.error("Error fetching books:", error);
-    toastStore.error("Gagal memuat data buku.");
+    toastStore.error("Gagal memuat katalog ebook.");
   } finally {
     loading.value = false;
   }
@@ -528,9 +474,8 @@ const clearSearch = () => {
 
 const resetFilters = () => {
   searchQuery.value = "";
-  selectedFilter.value = "all";
+  selectedFormat.value = "all";
   selectedCategory.value = "";
-  selectedShelf.value = "";
   fetchBooks();
 };
 
@@ -539,23 +484,20 @@ const uniqueCategories = computed(() => {
   return [...new Set(cats)].sort();
 });
 
-const uniqueShelves = computed(() => {
-  const shelves = allBooks.value.map((b) => b.shelf_location).filter(Boolean);
-  return [...new Set(shelves)].sort();
-});
+const pdfCount = computed(
+  () => allBooks.value.filter((b) => (b.file_format || '').toLowerCase() === "pdf").length
+);
 
-const uniqueShelvesCount = computed(() => uniqueShelves.value.length);
-const availableBooksCount = computed(
-  () => allBooks.value.filter((b) => b.stock > 0).length,
+const epubCount = computed(
+  () => allBooks.value.filter((b) => (b.file_format || '').toLowerCase() === "epub").length
 );
 
 const filteredBooks = computed(() => {
   return allBooks.value.filter((book) => {
-    if (selectedFilter.value === "available" && book.stock <= 0) return false;
-    if (selectedFilter.value === "out_of_stock" && book.stock > 0) return false;
+    const bookFmt = (book.file_format || '').toLowerCase();
+    if (selectedFormat.value === "pdf" && bookFmt !== "pdf") return false;
+    if (selectedFormat.value === "epub" && bookFmt !== "epub") return false;
     if (selectedCategory.value && book.category !== selectedCategory.value)
-      return false;
-    if (selectedShelf.value && book.shelf_location !== selectedShelf.value)
       return false;
     return true;
   });
@@ -565,38 +507,21 @@ const openDetail = (book) => {
   selectedDetailBook.value = book;
 };
 
-const askBorrowBook = (book) => {
+// Handle Click "Baca Ebook"
+const handleReadBook = (book) => {
+  selectedDetailBook.value = null;
+
   if (!authStore.isAuthenticated()) {
     toastStore.warning(
-      "Silakan masuk (login) terlebih dahulu untuk meminjam buku.",
+      "Silakan masuk (login) terlebih dahulu untuk membaca ebook."
     );
-    return router.push({ path: "/login", query: { redirect: "/" } });
-  }
-  if (book.stock <= 0) {
-    toastStore.error("Maaf, stok buku ini sedang habis.");
-    return;
-  }
-  bookToBorrow.value = book;
-  showConfirmModal.value = true;
-};
-
-const executeBorrow = async () => {
-  if (!bookToBorrow.value) return;
-  borrowing.value = true;
-  try {
-    const res = await api.post("/transactions/borrow", {
-      book_id: bookToBorrow.value.id,
+    return router.push({
+      path: "/login",
+      query: { redirect: `/read/${book.id}` },
     });
-    toastStore.success(res.data.message || "Buku berhasil dipinjam!");
-    showConfirmModal.value = false;
-    selectedDetailBook.value = null;
-    fetchBooks();
-  } catch (err) {
-    const msg = err.response?.data?.message || "Gagal meminjam buku.";
-    toastStore.error(msg);
-  } finally {
-    borrowing.value = false;
   }
+
+  router.push(`/read/${book.id}`);
 };
 
 onMounted(() => {

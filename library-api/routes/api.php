@@ -4,17 +4,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookController;
-use App\Http\Controllers\Api\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
+| Pengunjung dapat mendaftar, login, dan melihat katalog serta metadata ebook.
 */
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Katalog buku publik
+// Katalog ebook publik (hanya metadata)
 Route::get('/books', [BookController::class, 'index']);
 Route::get('/books/{id}', [BookController::class, 'show']);
 
@@ -28,22 +28,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', function (Request $request) {
         return response()->json([
             'success' => true,
-            'data'    => $request->user()
+            'data'    => $request->user(),
         ]);
     });
 
-    // Sirkulasi Peminjaman (Member & Admin)
-    Route::post('/transactions/borrow', [TransactionController::class, 'borrow']);
-    Route::put('/transactions/return/{id}', [TransactionController::class, 'returnBook']);
-    Route::get('/transactions/my', [TransactionController::class, 'myTransactions']);
+    // Akses membaca isi berkas ebook (wajib login)
+    Route::get('/books/{id}/read', [BookController::class, 'read']);
 
     /*
     |--------------------------------------------------------------------------
     | Admin Routes (Restricted with IsAdmin Middleware)
     |--------------------------------------------------------------------------
+    | Pustakawan/Admin dapat menambah, mengubah, mengunggah berkas, dan menghapus ebook.
     */
     Route::middleware('is_admin')->group(function () {
         Route::post('/admin/books', [BookController::class, 'store']);
+        Route::post('/admin/books/{id}', [BookController::class, 'update']); // Mendukung multipart upload penggantian file
         Route::put('/admin/books/{id}', [BookController::class, 'update']);
         Route::delete('/admin/books/{id}', [BookController::class, 'destroy']);
     });

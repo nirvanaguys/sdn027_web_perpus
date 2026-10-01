@@ -4,7 +4,7 @@ import { toastStore } from '../stores/toast';
 import BookCatalog from '../views/BookCatalog.vue';
 import Login from '../views/Login.vue';
 import AdminDashboard from '../views/AdminDashboard.vue';
-import MyLoans from '../views/MyLoans.vue';
+import EbookReader from '../views/EbookReader.vue';
 
 const routes = [
   {
@@ -14,22 +14,27 @@ const routes = [
     meta: { requiresAuth: false }
   },
   {
+    path: '/read/:id',
+    name: 'EbookReader',
+    component: EbookReader,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login,
     meta: { guestOnly: true }
   },
   {
-    path: '/my-loans',
-    name: 'MyLoans',
-    component: MyLoans,
-    meta: { requiresAuth: true }
-  },
-  {
     path: '/admin/books',
     name: 'AdminDashboard',
     component: AdminDashboard,
     meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    // Redirect rute transaksi lama ke katalog utama
+    path: '/my-loans',
+    redirect: '/'
   },
   {
     path: '/:pathMatch(.*)*',
@@ -55,7 +60,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.meta.requiresAuth && !isAuthenticated) {
-    toastStore.warning('Silakan masuk ke akun Anda terlebih dahulu.');
+    toastStore.warning('Silakan masuk ke akun Anda terlebih dahulu untuk membaca ebook.');
     return next({ path: '/login', query: { redirect: to.fullPath } });
   }
 
