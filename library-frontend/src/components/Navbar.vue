@@ -238,7 +238,7 @@ watch(
   () => route.path,
   () => {
     mobileMenuOpen.value = false;
-  }
+  },
 );
 
 const handleLogout = async () => {

@@ -37,7 +37,8 @@
         <p
           class="max-w-2xl mx-auto text-slate-300 text-sm sm:text-base leading-relaxed"
         >
-          Jelajahi koleksi ebook dalam format PDF dan EPUB. Baca langsung di peramban web Anda secara cepat, nyaman, dan responsif.
+          Jelajahi koleksi ebook dalam format PDF dan EPUB. Baca langsung di
+          peramban web Anda secara cepat, nyaman, dan responsif.
         </p>
 
         <!-- Prominent Search Bar -->
@@ -71,15 +72,21 @@
         >
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>Total <strong>{{ allBooks.length }}</strong> Koleksi Ebook</span>
+            <span
+              >Total <strong>{{ allBooks.length }}</strong> Koleksi Ebook</span
+            >
           </div>
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-rose-400"></span>
-            <span><strong>{{ pdfCount }}</strong> Ebook PDF</span>
+            <span
+              ><strong>{{ pdfCount }}</strong> Ebook PDF</span
+            >
           </div>
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-            <span><strong>{{ epubCount }}</strong> Ebook EPUB</span>
+            <span
+              ><strong>{{ epubCount }}</strong> Ebook EPUB</span
+            >
           </div>
         </div>
       </div>
@@ -113,9 +120,7 @@
         </div>
 
         <!-- Dropdown Filter: Category -->
-        <div
-          class="flex items-center gap-2 w-full sm:w-auto justify-end"
-        >
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
           <Filter class="w-4 h-4 text-slate-400 shrink-0" />
           <select
             v-model="selectedCategory"
@@ -202,7 +207,7 @@
                 "
               >
                 <FileText class="w-3.5 h-3.5" />
-                <span>{{ (book.file_format || 'PDF').toUpperCase() }}</span>
+                <span>{{ (book.file_format || "PDF").toUpperCase() }}</span>
               </span>
 
               <!-- Digital Read Ready Badge -->
@@ -221,7 +226,10 @@
               >
                 ISBN: {{ book.isbn }}
               </span>
-              <span v-if="book.file_size_formatted" class="text-[11px] text-white/80 bg-black/20 px-2 py-0.5 rounded-md">
+              <span
+                v-if="book.file_size_formatted"
+                class="text-[11px] text-white/80 bg-black/20 px-2 py-0.5 rounded-md"
+              >
                 {{ book.file_size_formatted }}
               </span>
             </div>
@@ -314,7 +322,12 @@
               class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-black/30 mb-3"
             >
               <FileText class="w-3.5 h-3.5" />
-              <span>Format: {{ (selectedDetailBook.file_format || 'PDF').toUpperCase() }}</span>
+              <span
+                >Format:
+                {{
+                  (selectedDetailBook.file_format || "PDF").toUpperCase()
+                }}</span
+              >
             </span>
             <h2 class="text-xl font-bold leading-snug">
               {{ selectedDetailBook.title }}
@@ -351,15 +364,20 @@
               <div>
                 <span class="text-slate-400 block mb-0.5">Ukuran File</span>
                 <strong class="text-slate-800 text-sm font-semibold">
-                  {{ selectedDetailBook.file_size_formatted || 'Tersedia' }}
+                  {{ selectedDetailBook.file_size_formatted || "Tersedia" }}
                 </strong>
               </div>
             </div>
 
             <!-- Description -->
             <div v-if="selectedDetailBook.description" class="space-y-1">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sinopsis / Deskripsi:</span>
-              <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <span
+                class="text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                >Sinopsis / Deskripsi:</span
+              >
+              <p
+                class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100"
+              >
                 {{ selectedDetailBook.description }}
               </p>
             </div>
@@ -367,7 +385,9 @@
             <div
               class="text-xs text-slate-500 leading-relaxed bg-indigo-50/60 p-3.5 rounded-xl border border-indigo-100/80"
             >
-              📖 <strong>Akses Membaca:</strong> Ebook ini dapat dibaca langsung secara online menggunakan pembaca terintegrasi. Anda wajib masuk (login) untuk membuka isi dokumen.
+              📖 <strong>Akses Membaca:</strong> Ebook ini dapat dibaca langsung
+              secara online menggunakan pembaca terintegrasi. Anda wajib masuk
+              (login) untuk membuka isi dokumen.
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2">
@@ -485,16 +505,20 @@ const uniqueCategories = computed(() => {
 });
 
 const pdfCount = computed(
-  () => allBooks.value.filter((b) => (b.file_format || '').toLowerCase() === "pdf").length
+  () =>
+    allBooks.value.filter((b) => (b.file_format || "").toLowerCase() === "pdf")
+      .length,
 );
 
 const epubCount = computed(
-  () => allBooks.value.filter((b) => (b.file_format || '').toLowerCase() === "epub").length
+  () =>
+    allBooks.value.filter((b) => (b.file_format || "").toLowerCase() === "epub")
+      .length,
 );
 
 const filteredBooks = computed(() => {
   return allBooks.value.filter((book) => {
-    const bookFmt = (book.file_format || '').toLowerCase();
+    const bookFmt = (book.file_format || "").toLowerCase();
     if (selectedFormat.value === "pdf" && bookFmt !== "pdf") return false;
     if (selectedFormat.value === "epub" && bookFmt !== "epub") return false;
     if (selectedCategory.value && book.category !== selectedCategory.value)
@@ -513,7 +537,7 @@ const handleReadBook = (book) => {
 
   if (!authStore.isAuthenticated()) {
     toastStore.warning(
-      "Silakan masuk (login) terlebih dahulu untuk membaca ebook."
+      "Silakan masuk (login) terlebih dahulu untuk membaca ebook.",
     );
     return router.push({
       path: "/login",
