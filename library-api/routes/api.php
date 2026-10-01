@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\ReadingLibraryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Akses membaca isi berkas ebook (wajib login)
     Route::get('/books/{id}/read', [BookController::class, 'read']);
+    Route::get('/reading-history', [ReadingLibraryController::class, 'history']);
+    Route::get('/reading-list', [ReadingLibraryController::class, 'readingList']);
+    Route::post('/reading-list/{bookId}', [ReadingLibraryController::class, 'saveBook']);
+    Route::delete('/reading-list/{bookId}', [ReadingLibraryController::class, 'removeBook']);
 
     /*
     |--------------------------------------------------------------------------

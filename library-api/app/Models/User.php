@@ -44,4 +44,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function readingHistories(): HasMany
+    {
+        return $this->hasMany(ReadingHistory::class);
+    }
+
+    public function readingLists(): HasMany
+    {
+        return $this->hasMany(ReadingList::class);
+    }
 }

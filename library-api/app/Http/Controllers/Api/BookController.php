@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\ReadingHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -75,6 +76,11 @@ class BookController extends Controller
             ], 404);
         }
 
+        ReadingHistory::updateOrCreate(
+            ['user_id' => $request->user()->id, 'book_id' => $book->id],
+            ['last_read_at' => now()],
+        );
+
         $format = strtolower($book->file_format ?: pathinfo($book->file_path, PATHINFO_EXTENSION));
         $contentType = match ($format) {
             'pdf'  => 'application/pdf',
@@ -107,6 +113,7 @@ class BookController extends Controller
             'isbn'           => 'required|string|unique:books,isbn|max:50',
             'category'       => 'nullable|string|max:100',
             'description'    => 'nullable|string',
+            'cover'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'stock'          => 'nullable|integer|min:0',
             'shelf_location' => 'nullable|string|max:50',
             'file'           => 'nullable|file|mimes:pdf,epub|max:51200', // maks 50MB
@@ -122,7 +129,12 @@ class BookController extends Controller
             $validated['file_size'] = $file->getSize();
         }
 
+        if ($request->hasFile('cover')) {
+            $validated['cover_image'] = $request->file('cover')->store('book-covers', 'public');
+        }
+
         unset($validated['file']);
+        unset($validated['cover']);
         $book = Book::create($validated);
 
         return response()->json([
@@ -146,6 +158,7 @@ class BookController extends Controller
             'isbn'           => 'required|string|max:50|unique:books,isbn,' . $book->id,
             'category'       => 'nullable|string|max:100',
             'description'    => 'nullable|string',
+            'cover'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'stock'          => 'nullable|integer|min:0',
             'shelf_location' => 'nullable|string|max:50',
             'file'           => 'nullable|file|mimes:pdf,epub|max:51200',
@@ -166,7 +179,16 @@ class BookController extends Controller
             $validated['file_size'] = $file->getSize();
         }
 
+        if ($request->hasFile('cover')) {
+            if ($book->cover_image && Storage::disk('public')->exists($book->cover_image)) {
+                Storage::disk('public')->delete($book->cover_image);
+            }
+
+            $validated['cover_image'] = $request->file('cover')->store('book-covers', 'public');
+        }
+
         unset($validated['file']);
+        unset($validated['cover']);
         $book->update($validated);
 
         return response()->json([
@@ -185,6 +207,10 @@ class BookController extends Controller
 
         if ($book->file_path && Storage::disk('local')->exists($book->file_path)) {
             Storage::disk('local')->delete($book->file_path);
+        }
+
+        if ($book->cover_image && Storage::disk('public')->exists($book->cover_image)) {
+            Storage::disk('public')->delete($book->cover_image);
         }
 
         $book->delete();

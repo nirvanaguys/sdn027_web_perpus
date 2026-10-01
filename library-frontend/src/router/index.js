@@ -5,6 +5,7 @@ import BookCatalog from "../views/BookCatalog.vue";
 import Login from "../views/Login.vue";
 import AdminDashboard from "../views/AdminDashboard.vue";
 import EbookReader from "../views/EbookReader.vue";
+import ReadingLibrary from "../views/ReadingLibrary.vue";
 
 const routes = [
   {
@@ -17,6 +18,18 @@ const routes = [
     path: "/read/:id",
     name: "EbookReader",
     component: EbookReader,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/history",
+    name: "ReadingHistory",
+    component: ReadingLibrary,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/reading-list",
+    name: "ReadingList",
+    component: ReadingLibrary,
     meta: { requiresAuth: true },
   },
   {

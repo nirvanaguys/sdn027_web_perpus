@@ -42,6 +42,34 @@
             <span>Katalog Ebook</span>
           </router-link>
 
+          <router-link
+            v-if="authStore.isAuthenticated()"
+            to="/history"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
+            :class="
+              $route.path === '/history'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+            "
+          >
+            <History class="w-4 h-4" />
+            <span>Riwayat</span>
+          </router-link>
+
+          <router-link
+            v-if="authStore.isAuthenticated()"
+            to="/reading-list"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
+            :class="
+              $route.path === '/reading-list'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+            "
+          >
+            <Bookmark class="w-4 h-4" />
+            <span>Reading List</span>
+          </router-link>
+
           <!-- Admin: Collection Management -->
           <router-link
             v-if="authStore.isAdmin()"
@@ -153,6 +181,25 @@
           <span>Katalog Ebook</span>
         </router-link>
 
+        <template v-if="authStore.isAuthenticated()">
+          <router-link
+            @click="mobileMenuOpen = false"
+            to="/history"
+            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition text-slate-700 hover:bg-slate-50"
+          >
+            <History class="w-5 h-5" />
+            <span>Riwayat</span>
+          </router-link>
+          <router-link
+            @click="mobileMenuOpen = false"
+            to="/reading-list"
+            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition text-slate-700 hover:bg-slate-50"
+          >
+            <Bookmark class="w-5 h-5" />
+            <span>Reading List</span>
+          </router-link>
+        </template>
+
         <router-link
           v-if="authStore.isAdmin()"
           @click="mobileMenuOpen = false"
@@ -214,6 +261,8 @@ import {
   BookOpen,
   Library,
   ShieldCheck,
+  History,
+  Bookmark,
   User,
   LogOut,
   Menu,

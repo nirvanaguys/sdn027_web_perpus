@@ -1,14 +1,23 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-8 gap-4">
+    <div
+      class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-8 gap-4"
+    >
       <div>
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold mb-2">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold mb-2"
+        >
           <ShieldCheck class="w-3.5 h-3.5" />
           <span>Panel Kontrol Pustakawan</span>
         </div>
-        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Manajemen Koleksi Ebook</h1>
-        <p class="text-sm text-slate-500 mt-1">Kelola metadata katalog digital, unggah dan ganti berkas ebook (PDF & EPUB).</p>
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+          Manajemen Koleksi Ebook
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Kelola metadata katalog digital, unggah dan ganti berkas ebook (PDF &
+          EPUB).
+        </p>
       </div>
 
       <button
@@ -22,54 +31,84 @@
 
     <!-- Quick Stats Cards -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
+      <div
+        class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs"
+      >
         <div class="flex items-center justify-between">
           <span class="text-xs font-medium text-slate-400">Total Koleksi</span>
-          <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <div
+            class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center"
+          >
             <BookOpen class="w-5 h-5" />
           </div>
         </div>
-        <div class="text-2xl font-extrabold text-slate-800 mt-2">{{ books.length }}</div>
+        <div class="text-2xl font-extrabold text-slate-800 mt-2">
+          {{ books.length }}
+        </div>
         <div class="text-xs text-slate-400 mt-1">Judul terdaftar</div>
       </div>
 
-      <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
+      <div
+        class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs"
+      >
         <div class="flex items-center justify-between">
           <span class="text-xs font-medium text-slate-400">Format PDF</span>
-          <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+          <div
+            class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center"
+          >
             <FileText class="w-5 h-5" />
           </div>
         </div>
-        <div class="text-2xl font-extrabold text-rose-600 mt-2">{{ pdfCount }}</div>
+        <div class="text-2xl font-extrabold text-rose-600 mt-2">
+          {{ pdfCount }}
+        </div>
         <div class="text-xs text-slate-400 mt-1">Dokumen PDF</div>
       </div>
 
-      <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
+      <div
+        class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs"
+      >
         <div class="flex items-center justify-between">
           <span class="text-xs font-medium text-slate-400">Format EPUB</span>
-          <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <div
+            class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center"
+          >
             <Bookmark class="w-5 h-5" />
           </div>
         </div>
-        <div class="text-2xl font-extrabold text-indigo-600 mt-2">{{ epubCount }}</div>
+        <div class="text-2xl font-extrabold text-indigo-600 mt-2">
+          {{ epubCount }}
+        </div>
         <div class="text-xs text-slate-400 mt-1">Ebook interaktif</div>
       </div>
 
-      <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
+      <div
+        class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs"
+      >
         <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-slate-400">Berkas Terunggah</span>
-          <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <span class="text-xs font-medium text-slate-400"
+            >Berkas Terunggah</span
+          >
+          <div
+            class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"
+          >
             <CheckCircle class="w-5 h-5" />
           </div>
         </div>
-        <div class="text-2xl font-extrabold text-emerald-600 mt-2">{{ readyCount }}</div>
+        <div class="text-2xl font-extrabold text-emerald-600 mt-2">
+          {{ readyCount }}
+        </div>
         <div class="text-xs text-slate-400 mt-1">Siap dibaca anggota</div>
       </div>
     </div>
 
     <!-- Table Container with Search & Filters -->
-    <div class="bg-white rounded-3xl shadow-xs border border-slate-200/80 overflow-hidden">
-      <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div
+      class="bg-white rounded-3xl shadow-xs border border-slate-200/80 overflow-hidden"
+    >
+      <div
+        class="p-5 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3"
+      >
         <div class="relative w-full sm:w-80">
           <Search class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
@@ -94,8 +133,12 @@
       </div>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-100 text-left text-xs sm:text-sm">
-          <thead class="bg-slate-50/80 text-slate-500 uppercase text-[11px] tracking-wider font-semibold">
+        <table
+          class="min-w-full divide-y divide-slate-100 text-left text-xs sm:text-sm"
+        >
+          <thead
+            class="bg-slate-50/80 text-slate-500 uppercase text-[11px] tracking-wider font-semibold"
+          >
             <tr>
               <th class="px-6 py-4">Judul Ebook & Penulis</th>
               <th class="px-6 py-4">Kategori</th>
@@ -112,17 +155,27 @@
               class="hover:bg-slate-50/70 transition-colors"
             >
               <td class="px-6 py-4">
-                <div class="font-bold text-slate-900 leading-snug">{{ book.title }}</div>
-                <div class="text-xs text-slate-500 mt-0.5">Penulis: {{ book.author }}</div>
+                <div class="font-bold text-slate-900 leading-snug">
+                  {{ book.title }}
+                </div>
+                <div class="text-xs text-slate-500 mt-0.5">
+                  Penulis: {{ book.author }}
+                </div>
               </td>
               <td class="px-6 py-4">
-                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
-                  {{ book.category || 'Umum' }}
+                <span
+                  class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700"
+                >
+                  {{ book.category || "Umum" }}
                 </span>
               </td>
               <td class="px-6 py-4">
-                <div class="text-slate-700 font-medium">{{ book.publisher }}</div>
-                <div class="font-mono text-[11px] text-slate-400 mt-0.5">{{ book.isbn }}</div>
+                <div class="text-slate-700 font-medium">
+                  {{ book.publisher }}
+                </div>
+                <div class="font-mono text-[11px] text-slate-400 mt-0.5">
+                  {{ book.isbn }}
+                </div>
               </td>
               <td class="px-6 py-4 text-center">
                 <span
@@ -133,11 +186,13 @@
                       : 'bg-indigo-50 text-indigo-700 border border-indigo-200/80'
                   "
                 >
-                  {{ (book.file_format || 'PDF').toUpperCase() }}
+                  {{ (book.file_format || "PDF").toUpperCase() }}
                 </span>
               </td>
-              <td class="px-6 py-4 text-center font-mono text-xs text-slate-500">
-                {{ book.file_size_formatted || '-' }}
+              <td
+                class="px-6 py-4 text-center font-mono text-xs text-slate-500"
+              >
+                {{ book.file_size_formatted || "-" }}
               </td>
               <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-1.5">
@@ -191,13 +246,23 @@
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm overflow-y-auto"
         @click.self="isModalOpen = false"
       >
-        <div class="bg-white rounded-3xl shadow-2xl max-w-xl w-full p-6 sm:p-7 border border-slate-100 relative my-8">
-          <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+        <div
+          class="bg-white rounded-3xl shadow-2xl max-w-xl w-full p-6 sm:p-7 border border-slate-100 relative my-8"
+        >
+          <div
+            class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5"
+          >
             <div>
               <h3 class="text-xl font-bold text-slate-900">
-                {{ modalMode === 'add' ? 'Tambah Ebook Baru' : 'Perbarui Data & Berkas Ebook' }}
+                {{
+                  modalMode === "add"
+                    ? "Tambah Ebook Baru"
+                    : "Perbarui Data & Berkas Ebook"
+                }}
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">Kelola metadata dan berkas digital untuk pembaca web.</p>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Kelola metadata dan berkas digital untuk pembaca web.
+              </p>
             </div>
             <button
               @click="isModalOpen = false"
@@ -209,7 +274,9 @@
 
           <form @submit.prevent="saveBook" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1.5">Judul Ebook</label>
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+                >Judul Ebook</label
+              >
               <input
                 v-model="form.title"
                 required
@@ -221,7 +288,9 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Penulis</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+                  >Penulis</label
+                >
                 <input
                   v-model="form.author"
                   required
@@ -231,7 +300,9 @@
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Penerbit</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+                  >Penerbit</label
+                >
                 <input
                   v-model="form.publisher"
                   required
@@ -244,7 +315,9 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Kode ISBN</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+                  >Kode ISBN</label
+                >
                 <input
                   v-model="form.isbn"
                   required
@@ -254,7 +327,9 @@
                 />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Kategori</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+                  >Kategori</label
+                >
                 <input
                   v-model="form.category"
                   type="text"
@@ -265,7 +340,9 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1.5">Sinopsis / Ringkasan Buku</label>
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+                >Sinopsis / Ringkasan Buku</label
+              >
               <textarea
                 v-model="form.description"
                 rows="3"
@@ -274,15 +351,49 @@
               ></textarea>
             </div>
 
+            <div class="border-b border-slate-200 pb-4">
+              <label class="mb-2 block text-xs font-semibold text-slate-700"
+                >Sampul ebook (opsional)</label
+              >
+              <img
+                v-if="currentCoverUrl && !selectedCover"
+                :src="assetUrl(currentCoverUrl)"
+                alt="Sampul ebook saat ini"
+                class="mb-3 h-28 w-20 object-cover"
+              />
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                @change="handleCoverChange"
+                class="block w-full text-xs text-slate-600"
+              />
+              <p class="mt-1 text-xs text-slate-500">
+                JPG, PNG, atau WebP, maksimal 5 MB.
+              </p>
+            </div>
+
             <!-- Upload File Ebook (PDF / EPUB) -->
-            <div class="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100">
+            <div
+              class="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100"
+            >
               <label class="block text-xs font-bold text-indigo-950 mb-1">
-                {{ modalMode === 'add' ? 'Berkas Ebook (PDF / EPUB)' : 'Ganti Berkas Ebook (Opsional)' }}
+                {{
+                  modalMode === "add"
+                    ? "Berkas Ebook (PDF / EPUB)"
+                    : "Ganti Berkas Ebook (Opsional)"
+                }}
               </label>
 
-              <div v-if="modalMode === 'edit' && currentFileInfo" class="text-xs text-indigo-800 mb-2.5 flex items-center gap-2">
+              <div
+                v-if="modalMode === 'edit' && currentFileInfo"
+                class="text-xs text-indigo-800 mb-2.5 flex items-center gap-2"
+              >
                 <CheckCircle class="w-4 h-4 text-emerald-600" />
-                <span>Berkas aktif: <strong>{{ currentFileInfo.format?.toUpperCase() }}</strong> ({{ currentFileInfo.size || 'Tersedia' }})</span>
+                <span
+                  >Berkas aktif:
+                  <strong>{{ currentFileInfo.format?.toUpperCase() }}</strong>
+                  ({{ currentFileInfo.size || "Tersedia" }})</span
+                >
               </div>
 
               <input
@@ -292,11 +403,15 @@
                 class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer"
               />
               <p class="text-[11px] text-slate-400 mt-1.5">
-                Mendukung format file <strong>.pdf</strong> atau <strong>.epub</strong> (maksimal 50MB). Berkas akan disimpan di storage privat.
+                Mendukung format file <strong>.pdf</strong> atau
+                <strong>.epub</strong> (maksimal 50MB). Berkas akan disimpan di
+                storage privat.
               </p>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+            <div
+              class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100"
+            >
               <button
                 type="button"
                 @click="isModalOpen = false"
@@ -313,7 +428,7 @@
                   v-if="submitting"
                   class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
                 ></div>
-                <span>{{ submitting ? 'Menyimpan...' : 'Simpan Ebook' }}</span>
+                <span>{{ submitting ? "Menyimpan..." : "Simpan Ebook" }}</span>
               </button>
             </div>
           </form>
@@ -337,10 +452,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import api from '../services/api';
-import { toastStore } from '../stores/toast';
-import ConfirmModal from '../components/ConfirmModal.vue';
+import { ref, computed, onMounted } from "vue";
+import api, { assetUrl } from "../services/api";
+import { toastStore } from "../stores/toast";
+import ConfirmModal from "../components/ConfirmModal.vue";
 import {
   ShieldCheck,
   Plus,
@@ -351,46 +466,58 @@ import {
   Trash2,
   X,
   FileText,
-  Bookmark
-} from 'lucide-vue-next';
+  Bookmark,
+} from "lucide-vue-next";
 
 const books = ref([]);
-const tableSearch = ref('');
-const formatFilter = ref('all');
+const tableSearch = ref("");
+const formatFilter = ref("all");
 
 const isModalOpen = ref(false);
-const modalMode = ref('add');
+const modalMode = ref("add");
 const submitting = ref(false);
 const selectedBookId = ref(null);
 const currentFileInfo = ref(null);
 const selectedFile = ref(null);
+const selectedCover = ref(null);
+const currentCoverUrl = ref(null);
 
 const showDeleteModal = ref(false);
 const bookToDelete = ref(null);
 const deleting = ref(false);
 
 const form = ref({
-  title: '',
-  author: '',
-  publisher: '',
-  isbn: '',
-  category: 'Umum',
-  description: '',
+  title: "",
+  author: "",
+  publisher: "",
+  isbn: "",
+  category: "Umum",
+  description: "",
 });
 
 const fetchBooks = async () => {
   try {
-    const res = await api.get('/books', { params: { per_page: 100 } });
+    const res = await api.get("/books", { params: { per_page: 100 } });
     books.value = res.data.data.data || [];
   } catch (err) {
-    console.error('Gagal mengambil data buku:', err);
-    toastStore.error('Gagal mengambil data koleksi ebook.');
+    console.error("Gagal mengambil data buku:", err);
+    toastStore.error("Gagal mengambil data koleksi ebook.");
   }
 };
 
-const pdfCount = computed(() => books.value.filter((b) => (b.file_format || '').toLowerCase() === 'pdf').length);
-const epubCount = computed(() => books.value.filter((b) => (b.file_format || '').toLowerCase() === 'epub').length);
-const readyCount = computed(() => books.value.filter((b) => b.has_ebook).length);
+const pdfCount = computed(
+  () =>
+    books.value.filter((b) => (b.file_format || "").toLowerCase() === "pdf")
+      .length,
+);
+const epubCount = computed(
+  () =>
+    books.value.filter((b) => (b.file_format || "").toLowerCase() === "epub")
+      .length,
+);
+const readyCount = computed(
+  () => books.value.filter((b) => b.has_ebook).length,
+);
 
 const filteredTableBooks = computed(() => {
   return books.value.filter((b) => {
@@ -404,9 +531,9 @@ const filteredTableBooks = computed(() => {
       if (!match) return false;
     }
 
-    const fmt = (b.file_format || '').toLowerCase();
-    if (formatFilter.value === 'pdf' && fmt !== 'pdf') return false;
-    if (formatFilter.value === 'epub' && fmt !== 'epub') return false;
+    const fmt = (b.file_format || "").toLowerCase();
+    if (formatFilter.value === "pdf" && fmt !== "pdf") return false;
+    if (formatFilter.value === "epub" && fmt !== "epub") return false;
 
     return true;
   });
@@ -419,12 +546,18 @@ const handleFileChange = (e) => {
   }
 };
 
+const handleCoverChange = (e) => {
+  selectedCover.value = e.target.files[0] || null;
+};
+
 const openModal = (mode, book = null) => {
   modalMode.value = mode;
   selectedFile.value = null;
+  selectedCover.value = null;
 
-  if (mode === 'edit' && book) {
+  if (mode === "edit" && book) {
     selectedBookId.value = book.id;
+    currentCoverUrl.value = book.cover_url || null;
     currentFileInfo.value = {
       format: book.file_format,
       size: book.file_size_formatted,
@@ -434,19 +567,20 @@ const openModal = (mode, book = null) => {
       author: book.author,
       publisher: book.publisher,
       isbn: book.isbn,
-      category: book.category || 'Umum',
-      description: book.description || '',
+      category: book.category || "Umum",
+      description: book.description || "",
     };
   } else {
     selectedBookId.value = null;
+    currentCoverUrl.value = null;
     currentFileInfo.value = null;
     form.value = {
-      title: '',
-      author: '',
-      publisher: '',
-      isbn: '',
-      category: 'Umum',
-      description: '',
+      title: "",
+      author: "",
+      publisher: "",
+      isbn: "",
+      category: "Umum",
+      description: "",
     };
   }
   isModalOpen.value = true;
@@ -456,35 +590,39 @@ const saveBook = async () => {
   submitting.value = true;
 
   const formData = new FormData();
-  formData.append('title', form.value.title);
-  formData.append('author', form.value.author);
-  formData.append('publisher', form.value.publisher);
-  formData.append('isbn', form.value.isbn);
-  formData.append('category', form.value.category || 'Umum');
+  formData.append("title", form.value.title);
+  formData.append("author", form.value.author);
+  formData.append("publisher", form.value.publisher);
+  formData.append("isbn", form.value.isbn);
+  formData.append("category", form.value.category || "Umum");
   if (form.value.description) {
-    formData.append('description', form.value.description);
+    formData.append("description", form.value.description);
   }
 
   if (selectedFile.value) {
-    formData.append('file', selectedFile.value);
+    formData.append("file", selectedFile.value);
+  }
+  if (selectedCover.value) {
+    formData.append("cover", selectedCover.value);
   }
 
   try {
-    if (modalMode.value === 'add') {
-      await api.post('/admin/books', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+    if (modalMode.value === "add") {
+      await api.post("/admin/books", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      toastStore.success('Ebook baru berhasil ditambahkan!');
+      toastStore.success("Ebook baru berhasil ditambahkan!");
     } else {
       await api.post(`/admin/books/${selectedBookId.value}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      toastStore.success('Data dan berkas ebook berhasil diperbarui!');
+      toastStore.success("Data dan berkas ebook berhasil diperbarui!");
     }
     isModalOpen.value = false;
     fetchBooks();
   } catch (err) {
-    const msg = err.response?.data?.message || 'Terjadi kesalahan saat menyimpan data.';
+    const msg =
+      err.response?.data?.message || "Terjadi kesalahan saat menyimpan data.";
     toastStore.error(msg);
   } finally {
     submitting.value = false;
@@ -501,11 +639,11 @@ const executeDelete = async () => {
   deleting.value = true;
   try {
     await api.delete(`/admin/books/${bookToDelete.value.id}`);
-    toastStore.success('Ebook dan berkas berhasil dihapus.');
+    toastStore.success("Ebook dan berkas berhasil dihapus.");
     showDeleteModal.value = false;
     fetchBooks();
   } catch (err) {
-    const msg = err.response?.data?.message || 'Gagal menghapus ebook.';
+    const msg = err.response?.data?.message || "Gagal menghapus ebook.";
     toastStore.error(msg);
   } finally {
     deleting.value = false;

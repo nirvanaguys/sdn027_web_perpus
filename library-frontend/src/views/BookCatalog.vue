@@ -1,104 +1,69 @@
 <template>
-  <div>
+  <div class="catalog-page">
     <!-- Modern Hero Section with Ambient Glow -->
     <section
       :style="{ backgroundImage: `url(${schoolImg})` }"
-      class="relative overflow-hidden bg-cover bg-center text-white pt-14 pb-20 px-4 sm:px-6 lg:px-8"
+      class="relative overflow-hidden bg-cover bg-center text-white px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
     >
-      <!-- Background Glowing Orbs -->
-      <div
-        class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"
-      ></div>
-      <div
-        class="absolute -bottom-10 right-1/4 w-96 h-96 bg-violet-500/15 rounded-full blur-3xl pointer-events-none"
-      ></div>
+      <div class="absolute inset-0 bg-emerald-950/75 pointer-events-none"></div>
 
-      <div class="absolute inset-0 bg-black/50 pointer-events-none"></div>
-
-      <div class="relative max-w-5xl mx-auto text-center space-y-6 z-10">
+      <div class="relative max-w-4xl mx-auto space-y-4 py-2 text-left z-10">
         <!-- Badge -->
         <div
-          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-indigo-300 text-xs font-semibold tracking-wide shadow-inner"
+          class="inline-flex items-center gap-2 text-emerald-100 text-sm font-semibold"
         >
-          <Sparkles class="w-3.5 h-3.5" />
           <span>Perpustakaan Ebook Digital Terpadu</span>
         </div>
 
         <!-- Headline -->
         <h1
-          class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-indigo-200"
+          class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white"
         >
-          Akses Ribuan Bacaan Digital
+          Temukan bacaan
           <br class="hidden sm:block" />
-          SDN 027 Balikpapan Utara
+          yang ingin kamu jelajahi.
         </h1>
 
         <!-- Subtitle -->
         <p
-          class="max-w-2xl mx-auto text-slate-300 text-sm sm:text-base leading-relaxed"
+          class="max-w-xl text-emerald-50 text-sm sm:text-base leading-relaxed"
         >
           Jelajahi koleksi ebook dalam format PDF dan EPUB. Baca langsung di
           peramban web Anda secara cepat, nyaman, dan responsif.
         </p>
 
         <!-- Prominent Search Bar -->
-        <div class="max-w-2xl mx-auto pt-2">
+        <div class="w-full max-w-2xl pt-2">
           <div
-            class="relative flex items-center bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-1.5 shadow-2xl focus-within:ring-2 focus-within:ring-indigo-400 focus-within:border-transparent transition-all"
+            class="relative flex items-center bg-white border border-white/20 rounded-md p-1.5 shadow-xl focus-within:ring-2 focus-within:ring-emerald-300 focus-within:border-transparent transition-all"
           >
             <div class="pl-3.5 text-slate-400">
-              <Search class="w-5 h-5 text-indigo-300" />
+              <Search class="w-5 h-5 text-emerald-800" />
             </div>
             <input
               v-model="searchQuery"
               @input="handleSearch"
-              type="text"
-              placeholder="Cari judul ebook, nama penulis, penerbit, atau ISBN..."
-              class="w-full px-3.5 py-2.5 bg-transparent text-white placeholder-slate-400 text-sm outline-none"
+              type="search"
+              placeholder="Judul, penulis, penerbit, atau ISBN"
+              class="w-full px-3.5 py-2.5 bg-transparent text-slate-900 placeholder-slate-500 text-sm outline-none"
             />
             <button
               v-if="searchQuery"
               @click="clearSearch"
-              class="p-2 text-slate-400 hover:text-white rounded-xl transition cursor-pointer"
+              class="p-2 text-slate-500 hover:text-slate-900 transition cursor-pointer"
             >
               <X class="w-4 h-4" />
             </button>
-          </div>
-        </div>
-
-        <!-- Metric Highlights -->
-        <div
-          class="flex flex-wrap items-center justify-center gap-6 pt-4 text-xs sm:text-sm text-slate-300"
-        >
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span
-              >Total <strong>{{ allBooks.length }}</strong> Koleksi Ebook</span
-            >
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-rose-400"></span>
-            <span
-              ><strong>{{ pdfCount }}</strong> Ebook PDF</span
-            >
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-            <span
-              ><strong>{{ epubCount }}</strong> Ebook EPUB</span
-            >
           </div>
         </div>
       </div>
     </section>
 
     <!-- Main Content: Catalog Grid & Filters -->
-    <main
-      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 pb-16"
-    >
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
       <!-- Filter Bar -->
       <div
-        class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+        class="bg-white border-b border-slate-200 py-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4"
       >
         <!-- Format Filter Tabs -->
         <div
@@ -184,13 +149,39 @@
         <div
           v-for="book in filteredBooks"
           :key="book.id"
-          class="group bg-white rounded-3xl border border-slate-200/80 hover:border-indigo-300 shadow-xs hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden"
+          class="group flex min-w-0 flex-col"
         >
           <!-- Card Header Spine Gradient -->
           <div
-            class="h-36 p-5 flex flex-col justify-between text-white relative overflow-hidden"
-            :class="getCardGradient(book.id)"
+            class="relative mb-3 aspect-[3/4] overflow-hidden bg-emerald-900 text-white"
           >
+            <img
+              v-if="book.cover_url"
+              :src="assetUrl(book.cover_url)"
+              :alt="`Sampul ${book.title}`"
+              class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            />
+            <div
+              v-else
+              class="flex h-full flex-col justify-between p-4 sm:p-5"
+              :class="getCardGradient(book.id)"
+            >
+              <span
+                class="text-[10px] font-semibold uppercase tracking-widest text-white/75"
+                >{{ book.category || "Koleksi ebook" }}</span
+              >
+              <div>
+                <div class="mb-2 h-px w-8 bg-white/60"></div>
+                <p
+                  class="line-clamp-4 font-serif text-lg font-semibold leading-tight sm:text-xl"
+                >
+                  {{ book.title }}
+                </p>
+                <p class="mt-2 line-clamp-1 text-xs text-white/75">
+                  {{ book.author }}
+                </p>
+              </div>
+            </div>
             <!-- Decorative circle -->
             <div
               class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/10 blur-sm pointer-events-none"
@@ -269,7 +260,7 @@
             </div>
 
             <!-- Action Area: Detail & Baca Online -->
-            <div class="mt-auto pt-5 grid grid-cols-2 gap-2">
+            <div class="mt-auto pt-5 grid grid-cols-[1fr_auto_1fr] gap-2">
               <button
                 @click="openDetail(book)"
                 class="py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition flex items-center justify-center gap-1.5 cursor-pointer"
@@ -278,6 +269,27 @@
                 <span>Detail</span>
               </button>
 
+              <button
+                v-if="authStore.isAuthenticated()"
+                type="button"
+                @click="toggleReadingList(book)"
+                :aria-label="
+                  savedBookIds.has(book.id)
+                    ? 'Hapus dari Reading List'
+                    : 'Simpan ke Reading List'
+                "
+                :title="
+                  savedBookIds.has(book.id)
+                    ? 'Hapus dari Reading List'
+                    : 'Simpan ke Reading List'
+                "
+                class="p-2 text-slate-500 hover:text-emerald-800"
+              >
+                <Bookmark
+                  class="h-4 w-4"
+                  :fill="savedBookIds.has(book.id) ? 'currentColor' : 'none'"
+                />
+              </button>
               <button
                 @click="handleReadBook(book)"
                 class="py-2.5 px-3 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/20"
@@ -415,9 +427,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
-import api from "../services/api";
+import api, { assetUrl } from "../services/api";
 import { authStore } from "../stores/auth";
 import { toastStore } from "../stores/toast";
 import {
@@ -443,6 +455,7 @@ const selectedCategory = ref("");
 const loading = ref(false);
 
 const selectedDetailBook = ref(null);
+const savedBookIds = ref(new Set());
 
 let debounceTimer = null;
 
@@ -452,17 +465,17 @@ const formatFilterOptions = [
   { label: "EPUB", value: "epub" },
 ];
 
-const gradients = [
-  "bg-gradient-to-tr from-indigo-600 to-violet-700",
-  "bg-gradient-to-tr from-blue-600 to-indigo-700",
-  "bg-gradient-to-tr from-teal-600 to-emerald-700",
-  "bg-gradient-to-tr from-purple-600 to-pink-700",
-  "bg-gradient-to-tr from-amber-600 to-orange-700",
-  "bg-gradient-to-tr from-rose-600 to-red-700",
+const coverColors = [
+  "bg-emerald-900",
+  "bg-slate-800",
+  "bg-teal-800",
+  "bg-stone-800",
+  "bg-green-900",
+  "bg-cyan-900",
 ];
 
 const getCardGradient = (id) => {
-  return gradients[(id || 0) % gradients.length];
+  return coverColors[(id || 0) % coverColors.length];
 };
 
 const fetchBooks = async () => {
@@ -548,7 +561,40 @@ const handleReadBook = (book) => {
   router.push(`/read/${book.id}`);
 };
 
+const fetchReadingList = async () => {
+  if (!authStore.isAuthenticated()) return;
+  try {
+    const res = await api.get("/reading-list");
+    savedBookIds.value = new Set(
+      (res.data.data || []).map((entry) => entry.book_id),
+    );
+  } catch (error) {
+    console.error("Gagal memuat Reading List:", error);
+  }
+};
+
+const toggleReadingList = async (book) => {
+  const isSaved = savedBookIds.value.has(book.id);
+  try {
+    if (isSaved) {
+      await api.delete(`/reading-list/${book.id}`);
+      toastStore.success("Ebook dihapus dari Reading List.");
+    } else {
+      await api.post(`/reading-list/${book.id}`);
+      toastStore.success("Ebook disimpan ke Reading List.");
+    }
+    const next = new Set(savedBookIds.value);
+    isSaved ? next.delete(book.id) : next.add(book.id);
+    savedBookIds.value = next;
+  } catch (error) {
+    toastStore.error("Gagal memperbarui Reading List.");
+  }
+};
+
 onMounted(() => {
   fetchBooks();
+  fetchReadingList();
 });
+
+onBeforeUnmount(() => clearTimeout(debounceTimer));
 </script>

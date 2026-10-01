@@ -14,10 +14,7 @@
       >
         <div class="flex items-center gap-2">
           <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-          <span
-            >Sistem Perpustakaan Digital & Sirkulasi Fisik • Full-Stack
-            Decoupled</span
-          >
+          <span>Perpustakaan Ebook Digital SDN 027 Balikpapan Utara</span>
         </div>
         <div class="text-slate-400">
           &copy; {{ new Date().getFullYear() }} Perpusku.
