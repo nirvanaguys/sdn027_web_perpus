@@ -6,11 +6,11 @@
       <div class="flex items-center justify-between h-20">
         <!-- Brand Logo -->
         <router-link to="/" class="flex items-center gap-3 group">
-          <div
-            class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 group-hover:shadow-indigo-500/40 transition-all duration-300"
-          >
-            <BookOpen class="w-6 h-6 stroke-[2.2]" />
-          </div>
+          <img
+            :src="brandLogo"
+            alt="Logo PerpusKu"
+            class="h-10 w-16 shrink-0 object-contain transition-transform duration-200 group-hover:scale-105"
+          />
           <div>
             <span
               class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-800 bg-clip-text text-transparent"
@@ -82,7 +82,7 @@
             "
           >
             <ShieldCheck class="w-4 h-4" />
-            <span>Kelola Koleksi</span>
+            <span>Koleksi Buku</span>
           </router-link>
         </nav>
 
@@ -207,7 +207,7 @@
           class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-indigo-600 text-white"
         >
           <ShieldCheck class="w-5 h-5" />
-          <span>Kelola Koleksi</span>
+          <span>Koleksi Buku</span>
         </router-link>
 
         <div class="pt-3 border-t border-slate-100">
@@ -257,8 +257,8 @@ import { useRouter, useRoute } from "vue-router";
 import { authStore } from "../stores/auth";
 import { toastStore } from "../stores/toast";
 import api from "../services/api";
+import brandLogo from "../assets/logoperpus.svg";
 import {
-  BookOpen,
   Library,
   ShieldCheck,
   History,

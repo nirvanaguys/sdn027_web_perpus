@@ -12,24 +12,23 @@
         <div
           class="inline-flex items-center gap-2 text-emerald-100 text-sm font-semibold"
         >
-          <span>Perpustakaan Ebook Digital Terpadu</span>
+          <span>Perpustakaan Ebook Digital </span>
         </div>
 
         <!-- Headline -->
         <h1
           class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white"
         >
-          Temukan bacaan
+          Perpustakaan Digital
           <br class="hidden sm:block" />
-          yang ingin kamu jelajahi.
+          SDN 027 Balikpapan Utara
         </h1>
 
         <!-- Subtitle -->
         <p
           class="max-w-xl text-emerald-50 text-sm sm:text-base leading-relaxed"
         >
-          Jelajahi koleksi ebook dalam format PDF dan EPUB. Baca langsung di
-          peramban web Anda secara cepat, nyaman, dan responsif.
+          Mari membangun dunia mulai dari membaca buku!
         </p>
 
         <!-- Prominent Search Bar -->
