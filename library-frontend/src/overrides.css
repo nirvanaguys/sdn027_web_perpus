@@ -1,7 +1,10 @@
-/* Overrides to replace indigo/violet utilities with green (#248900) */
+/* Overrides to unify indigo/violet accents into school green (#248900). UI only. */
 :root {
   --primary-600: #248900;
   --primary-700: #1c6d00;
+  --primary-800: #175c00;
+  --primary-500: #2ea300;
+  --primary-100: #e4f5d8;
   --primary-50: #eef9e6;
   --primary-300: #8bcf78;
 }
@@ -13,17 +16,38 @@
 .bg-indigo-700 {
   background-color: var(--primary-700) !important;
 }
+.bg-indigo-500 {
+  background-color: var(--primary-500) !important;
+}
 .hover\:bg-indigo-700:hover {
   background-color: var(--primary-700) !important;
 }
+.hover\:bg-indigo-600:hover {
+  background-color: var(--primary-600) !important;
+}
 .text-indigo-600 {
   color: var(--primary-600) !important;
+}
+.text-indigo-700 {
+  color: var(--primary-700) !important;
+}
+.text-indigo-500 {
+  color: var(--primary-500) !important;
 }
 .text-indigo-300 {
   color: var(--primary-300) !important;
 }
 .bg-indigo-50 {
   background-color: var(--primary-50) !important;
+}
+.bg-indigo-100 {
+  background-color: var(--primary-100) !important;
+}
+.border-indigo-100 {
+  border-color: #d7ecc8 !important;
+}
+.border-indigo-200 {
+  border-color: #bfe0ac !important;
 }
 
 /* Gradient stops (Tailwind uses CSS vars for gradients) */
@@ -33,11 +57,20 @@
 .from-indigo-700 {
   --tw-gradient-from: var(--primary-700) !important;
 }
+.from-indigo-500 {
+  --tw-gradient-from: var(--primary-500) !important;
+}
 .to-violet-600 {
   --tw-gradient-to: var(--primary-600) !important;
 }
 .to-violet-700 {
   --tw-gradient-to: var(--primary-700) !important;
+}
+.via-indigo-950 {
+  --tw-gradient-via: #0e2a05 !important;
+}
+.to-indigo-800 {
+  --tw-gradient-to: var(--primary-800) !important;
 }
 
 /* Borders / highlights */
@@ -48,10 +81,12 @@
 /* Shadows that reference indigo tints */
 .shadow-indigo-500\/25,
 .shadow-indigo-500\/20,
-.shadow-indigo-600\/20 {
+.shadow-indigo-500\/35,
+.shadow-indigo-600\/20,
+.shadow-indigo-600\/25 {
   box-shadow:
-    0 10px 15px -3px rgba(36, 137, 0, 0.2),
-    0 4px 6px -2px rgba(36, 137, 0, 0.05) !important;
+    0 10px 15px -3px rgba(36, 137, 0, 0.22),
+    0 4px 6px -2px rgba(36, 137, 0, 0.06) !important;
 }
 
 /* Utility hover/text combos used in components */
@@ -59,26 +94,33 @@
   color: var(--primary-600) !important;
 }
 
-/* Small helpers */
+/* Gradient buttons */
 .bg-gradient-to-r.from-indigo-600.to-violet-600 {
   background-image: linear-gradient(
     to right,
     var(--primary-600),
-    var(--primary-600)
+    var(--primary-800)
   ) !important;
 }
-.bg-gradient-to-tr.from-indigo-600.to-violet-700 {
+.bg-gradient-to-tr.from-indigo-600.to-violet-700,
+.bg-gradient-to-tr.from-indigo-500.to-violet-500 {
   background-image: linear-gradient(
-    45deg,
+    135deg,
     var(--primary-600),
-    var(--primary-700)
+    var(--primary-800)
   ) !important;
 }
 
 /* Badge and pill colors */
-.bg-indigo-50.text-indigo-600 {
+.bg-indigo-50.text-indigo-600,
+.bg-indigo-50.text-indigo-700,
+.bg-indigo-100.text-indigo-800,
+.bg-indigo-100.text-indigo-700 {
   background-color: var(--primary-50) !important;
-  color: var(--primary-600) !important;
+  color: var(--primary-700) !important;
 }
 
-/* Ensure important where needed to override compiled utilities */
+/* Focus rings mapped to brand */
+.focus\:ring-indigo-500:focus {
+  --tw-ring-color: rgba(36, 137, 0, 0.35) !important;
+}

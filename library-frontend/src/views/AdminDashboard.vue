@@ -22,7 +22,7 @@
 
       <button
         @click="openModal('add')"
-        class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-semibold rounded-2xl shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/35 transition duration-200 cursor-pointer self-start sm:self-auto"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#248900] to-[#14532d] hover:brightness-[1.07] text-white text-sm font-semibold rounded-2xl shadow-[0_16px_35px_-16px_rgba(36,137,0,0.7)] transition duration-200 cursor-pointer self-start sm:self-auto"
       >
         <Plus class="w-5 h-5" />
         <span>Tambah Ebook Baru</span>
@@ -32,12 +32,12 @@
     <!-- Quick Stats Cards -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <div
-        class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs"
+        class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.5)]"
       >
         <div class="flex items-center justify-between">
           <span class="text-xs font-medium text-slate-400">Total Koleksi</span>
           <div
-            class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center"
+            class="w-9 h-9 rounded-xl bg-[#eef9e6] text-[#1c6d00] flex items-center justify-center"
           >
             <BookOpen class="w-5 h-5" />
           </div>
@@ -49,7 +49,7 @@
       </div>
 
       <div
-        class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs"
+        class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.5)]"
       >
         <div class="flex items-center justify-between">
           <span class="text-xs font-medium text-slate-400">Format PDF</span>
@@ -66,24 +66,24 @@
       </div>
 
       <div
-        class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs"
+        class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.5)]"
       >
         <div class="flex items-center justify-between">
           <span class="text-xs font-medium text-slate-400">Format EPUB</span>
           <div
-            class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center"
+            class="w-9 h-9 rounded-xl bg-[#eef9e6] text-[#1c6d00] flex items-center justify-center"
           >
             <Bookmark class="w-5 h-5" />
           </div>
         </div>
-        <div class="text-2xl font-extrabold text-indigo-600 mt-2">
+        <div class="text-2xl font-extrabold text-[#1c6d00] mt-2">
           {{ epubCount }}
         </div>
         <div class="text-xs text-slate-400 mt-1">Ebook interaktif</div>
       </div>
 
       <div
-        class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs"
+        class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.5)]"
       >
         <div class="flex items-center justify-between">
           <span class="text-xs font-medium text-slate-400"
@@ -104,7 +104,7 @@
 
     <!-- Table Container with Search & Filters -->
     <div
-      class="bg-white rounded-3xl shadow-xs border border-slate-200/80 overflow-hidden"
+      class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-[0_18px_40px_-32px_rgba(15,23,42,0.5)]"
     >
       <div
         class="p-5 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3"
@@ -206,7 +206,7 @@
                   <button
                     @click="openModal('edit', book)"
                     title="Edit Metadata & Berkas"
-                    class="p-2 rounded-xl text-indigo-600 hover:bg-indigo-50 transition cursor-pointer"
+                    class="p-2 rounded-xl text-[#1c6d00] hover:bg-[#eef9e6] transition cursor-pointer"
                   >
                     <Edit3 class="w-4 h-4" />
                   </button>
@@ -374,9 +374,9 @@
 
             <!-- Upload File Ebook (PDF / EPUB) -->
             <div
-              class="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100"
+              class="p-4 rounded-2xl bg-[#eef9e6] border border-[#248900]/20"
             >
-              <label class="block text-xs font-bold text-indigo-950 mb-1">
+              <label class="block text-xs font-bold text-[#0e2f14] mb-1">
                 {{
                   modalMode === "add"
                     ? "Berkas Ebook (PDF / EPUB)"
@@ -386,7 +386,7 @@
 
               <div
                 v-if="modalMode === 'edit' && currentFileInfo"
-                class="text-xs text-indigo-800 mb-2.5 flex items-center gap-2"
+                class="text-xs text-[#1c6d00] mb-2.5 flex items-center gap-2"
               >
                 <CheckCircle class="w-4 h-4 text-emerald-600" />
                 <span
@@ -400,7 +400,7 @@
                 type="file"
                 accept=".pdf,.epub"
                 @change="handleFileChange"
-                class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer"
+                class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#248900] file:text-white hover:file:bg-[#1c6d00] cursor-pointer"
               />
               <p class="text-[11px] text-slate-400 mt-1.5">
                 Mendukung format file <strong>.pdf</strong> atau
@@ -422,7 +422,7 @@
               <button
                 type="submit"
                 :disabled="submitting"
-                class="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-600/20 transition flex items-center gap-2 cursor-pointer"
+                class="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#248900] to-[#14532d] hover:brightness-[1.07] rounded-xl shadow-md shadow-[#248900]/25 transition flex items-center gap-2 cursor-pointer disabled:opacity-70"
               >
                 <div
                   v-if="submitting"

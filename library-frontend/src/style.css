@@ -3,21 +3,44 @@
 :root {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #0f172a;
+  --brand-900: #14532d;
+  --brand-800: #166534;
+  --brand-700: #15803d;
+  --brand-600: #248900;
+  --brand-500: #2ea300;
+  --brand-100: #dcfce7;
+  --brand-50: #eef9e6;
+  --card-ring: rgba(15, 23, 42, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #f6f8f7;
+  background-image:
+    radial-gradient(900px 320px at 12% -60px, rgba(36, 137, 0, 0.08), transparent 60%),
+    radial-gradient(800px 300px at 95% 0%, rgba(20, 83, 45, 0.07), transparent 60%);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Selection */
+::selection {
+  background: #248900;
+  color: #fff;
 }
 
 /* Custom Modern Scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -25,7 +48,76 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+  background-clip: content-box;
+}
+
+/* Focus visibility for accessibility (UI only) */
+:focus-visible {
+  outline: 2px solid #248900;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Reusable UI-only animations */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.anim-fade-up {
+  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.anim-fade-up-1 { animation: fade-up 0.55s 0.05s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-fade-up-2 { animation: fade-up 0.55s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-fade-up-3 { animation: fade-up 0.55s 0.19s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.hero-bg-zoom {
+  animation: hero-zoom 8s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up,
+  .anim-fade-up-1,
+  .anim-fade-up-2,
+  .anim-fade-up-3,
+  .hero-bg-zoom {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Card lift (pure visual) */
+.lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.lift:hover {
+  transform: translateY(-4px);
+}
+
+/* Image rendering */
+img {
+  -webkit-user-drag: none;
 }

@@ -1,191 +1,252 @@
 <template>
-  <div class="min-h-[85vh] flex items-center justify-center px-4 py-12">
-    <div class="max-w-md w-full">
-      <!-- Card Container -->
-      <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200/80 backdrop-blur-xl relative overflow-hidden">
-        
-        <!-- Header Branding -->
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-500/25 mb-3">
-            <Sparkles class="w-6 h-6" />
-          </div>
-          <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">
-            {{ isRegister ? 'Daftar Anggota Baru' : 'Selamat Datang Kembali' }}
-          </h2>
-          <p class="text-xs sm:text-sm text-slate-500 mt-1">
-            {{ isRegister ? 'Buat akun untuk mulai meminjam koleksi buku' : 'Akses akun sistem perpustakaan Perpusku' }}
-          </p>
-        </div>
+  <div class="relative min-h-[88vh] overflow-hidden">
+    <!-- Background foto sekolah sd027.jpg -->
+    <div class="absolute inset-0" aria-hidden="true">
+      <img :src="schoolImg" alt="" class="h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-br from-[#08170c]/90 via-[#0e2f14]/72 to-[#14532d]/55"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(700px_320px_at_20%_10%,rgba(139,207,120,0.22),transparent_65%)]"></div>
+    </div>
 
-        <!-- Mode Toggle Tabs (Masuk vs Daftar) -->
-        <div class="flex p-1 bg-slate-100 rounded-2xl mb-6">
-          <button
-            type="button"
-            @click="isRegister = false"
-            class="flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer"
-            :class="!isRegister ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'"
-          >
-            Masuk (Login)
-          </button>
-          <button
-            type="button"
-            @click="isRegister = true"
-            class="flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer"
-            :class="isRegister ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'"
-          >
-            Daftar Akun
-          </button>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+      <!-- Panel kiri: branding -->
+      <div class="anim-fade-up hidden lg:block text-white">
+        <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-50 backdrop-blur">
+          <BookOpen class="h-4 w-4 text-emerald-200" />
+          Perpustakaan Ebook Digital
         </div>
-
-        <!-- 1-Click Quick Demo Accounts (Only on Login tab) -->
-        <div v-if="!isRegister" class="mb-6 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
-          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-            Akses Cepat Akun Demo (1-Click Login):
+        <h1 class="mt-5 text-4xl xl:text-5xl font-extrabold leading-[1.08] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
+          Satu akun untuk
+          <span class="block bg-gradient-to-r from-[#c9ecb4] via-white to-[#d9f2c7] bg-clip-text text-transparent">
+            semua bacaan sekolah.
           </span>
-          <div class="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              @click="fillDemo('admin')"
-              class="px-3 py-2 rounded-xl text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <ShieldCheck class="w-3.5 h-3.5" />
-              <span>Admin Demo</span>
-            </button>
-            <button
-              type="button"
-              @click="fillDemo('member')"
-              class="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 hover:bg-indigo-100 transition flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <User class="w-3.5 h-3.5" />
-              <span>Member Demo</span>
-            </button>
-          </div>
-        </div>
+        </h1>
+        <p class="mt-4 max-w-md text-sm leading-relaxed text-emerald-50/90">
+          Masuk untuk membaca ebook, menyimpan Reading List, dan melihat riwayat
+          bacaanmu. Akun baru otomatis menjadi anggota perpustakaan.
+        </p>
+        <ul class="mt-6 space-y-3 text-sm">
+          <li class="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-100"><Zap class="h-4 w-4" /></span>
+            <span class="text-emerald-50"><strong class="font-bold text-white">Baca online</strong> tanpa unduh & tanpa antre.</span>
+          </li>
+          <li class="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-100"><Bookmark class="h-4 w-4" /></span>
+            <span class="text-emerald-50"><strong class="font-bold text-white">Simpan favorit</strong> ke Reading List pribadimu.</span>
+          </li>
+          <li class="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-100"><ShieldCheck class="h-4 w-4" /></span>
+            <span class="text-emerald-50"><strong class="font-bold text-white">Aman</strong> untuk siswa, guru, dan pustakawan.</span>
+          </li>
+        </ul>
+      </div>
 
-        <!-- Login Form -->
-        <form v-if="!isRegister" @submit.prevent="handleLogin" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Email</label>
-            <div class="relative">
-              <Mail class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-              <input
-                v-model="email"
-                type="email"
-                required
-                placeholder="nama@email.com"
-                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
-              />
+      <!-- Card form -->
+      <div class="anim-fade-up-1 mx-auto w-full max-w-md">
+        <div class="rounded-3xl border border-white/40 bg-white p-7 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.6)] sm:p-8 relative overflow-hidden">
+          <div class="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#14532d] via-[#248900] to-[#8bcf78]" aria-hidden="true"></div>
+          <!-- Header Branding -->
+          <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#248900] to-[#14532d] text-white shadow-lg shadow-[#248900]/30 mb-3">
+              <Library class="w-6 h-6" />
             </div>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">
+              {{ isRegister ? 'Daftar Anggota Baru' : 'Selamat Datang Kembali' }}
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+              {{ isRegister ? 'Buat akun untuk mulai membaca koleksi ebook' : 'Akses akun perpustakaan PerpusKu' }}
+            </p>
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Kata Sandi</label>
-            <div class="relative">
-              <Lock class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-              <input
-                v-model="password"
-                :type="showPassword ? 'text' : 'password'"
-                required
-                placeholder="••••••••"
-                class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
-              />
+          <!-- Mode Toggle Tabs (Masuk vs Daftar) -->
+          <div class="flex p-1 bg-slate-100 rounded-2xl mb-5" role="tablist" aria-label="Pilih mode akun">
+            <button
+              type="button"
+              @click="isRegister = false"
+              class="flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer"
+              :class="!isRegister ? 'bg-white text-[#1c6d00] shadow-sm ring-1 ring-[#248900]/20' : 'text-slate-500 hover:text-slate-800'"
+            >
+              Masuk (Login)
+            </button>
+            <button
+              type="button"
+              @click="isRegister = true"
+              class="flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer"
+              :class="isRegister ? 'bg-white text-[#1c6d00] shadow-sm ring-1 ring-[#248900]/20' : 'text-slate-500 hover:text-slate-800'"
+            >
+              Daftar Akun
+            </button>
+          </div>
+
+          <!-- 1-Click Quick Demo Accounts (Only on Login tab) -->
+          <div v-if="!isRegister" class="mb-5 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+              Akses Cepat Akun Demo (1-Click Login):
+            </span>
+            <div class="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                @click="showPassword = !showPassword"
-                class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 cursor-pointer"
+                @click="fillDemo('admin')"
+                class="px-3 py-2 rounded-xl text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <EyeOff v-if="showPassword" class="w-4 h-4" />
-                <Eye v-else class="w-4 h-4" />
+                <ShieldCheck class="w-3.5 h-3.5" />
+                <span>Admin Demo</span>
+              </button>
+              <button
+                type="button"
+                @click="fillDemo('member')"
+                class="px-3 py-2 rounded-xl text-xs font-semibold bg-[#eef9e6] text-[#1c6d00] border border-[#248900]/25 hover:bg-[#dcefd0] transition flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <User class="w-3.5 h-3.5" />
+                <span>Member Demo</span>
               </button>
             </div>
           </div>
 
-          <button
-            :disabled="loading"
-            type="submit"
-            class="w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold rounded-2xl text-sm transition shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 cursor-pointer mt-2"
-          >
-            <div
-              v-if="loading"
-              class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-            ></div>
-            <span>{{ loading ? 'Memverifikasi...' : 'Masuk Sekarang' }}</span>
-            <ArrowRight v-if="!loading" class="w-4 h-4" />
-          </button>
-        </form>
-
-        <!-- Register Form -->
-        <form v-else @submit.prevent="handleRegister" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Lengkap</label>
-            <div class="relative">
-              <User class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-              <input
-                v-model="regName"
-                type="text"
-                required
-                placeholder="Nama Anda"
-                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
-              />
+          <!-- Login Form -->
+          <form v-if="!isRegister" @submit.prevent="handleLogin" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5" for="login-email">Alamat Email</label>
+              <div class="relative">
+                <Mail class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  id="login-email"
+                  v-model="email"
+                  type="email"
+                  required
+                  autocomplete="email"
+                  placeholder="nama@email.com"
+                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Email</label>
-            <div class="relative">
-              <Mail class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-              <input
-                v-model="regEmail"
-                type="email"
-                required
-                placeholder="nama@email.com"
-                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
-              />
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5" for="login-password">Kata Sandi</label>
+              <div class="relative">
+                <Lock class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  id="login-password"
+                  v-model="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  required
+                  autocomplete="current-password"
+                  placeholder="••••••••"
+                  class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                />
+                <button
+                  type="button"
+                  @click="showPassword = !showPassword"
+                  :aria-label="showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
+                  class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 cursor-pointer"
+                >
+                  <EyeOff v-if="showPassword" class="w-4 h-4" />
+                  <Eye v-else class="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Kata Sandi (Min. 8 Karakter)</label>
-            <div class="relative">
-              <Lock class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-              <input
-                v-model="regPassword"
-                type="password"
-                required
-                minlength="8"
-                placeholder="••••••••"
-                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
-              />
+            <button
+              :disabled="loading"
+              type="submit"
+              class="w-full py-3 bg-gradient-to-r from-[#248900] to-[#14532d] hover:brightness-[1.07] text-white font-bold rounded-2xl text-sm transition shadow-lg shadow-[#248900]/30 flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-70"
+            >
+              <div
+                v-if="loading"
+                class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+              ></div>
+              <span>{{ loading ? 'Memverifikasi...' : 'Masuk Sekarang' }}</span>
+              <ArrowRight v-if="!loading" class="w-4 h-4" />
+            </button>
+          </form>
+
+          <!-- Register Form -->
+          <form v-else @submit.prevent="handleRegister" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5" for="reg-name">Nama Lengkap</label>
+              <div class="relative">
+                <User class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  id="reg-name"
+                  v-model="regName"
+                  type="text"
+                  required
+                  autocomplete="name"
+                  placeholder="Nama Anda"
+                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Konfirmasi Kata Sandi</label>
-            <div class="relative">
-              <Lock class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-              <input
-                v-model="regPasswordConfirm"
-                type="password"
-                required
-                minlength="8"
-                placeholder="••••••••"
-                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
-              />
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5" for="reg-email">Alamat Email</label>
+              <div class="relative">
+                <Mail class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  id="reg-email"
+                  v-model="regEmail"
+                  type="email"
+                  required
+                  autocomplete="email"
+                  placeholder="nama@email.com"
+                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                />
+              </div>
             </div>
-          </div>
 
-          <button
-            :disabled="loading"
-            type="submit"
-            class="w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold rounded-2xl text-sm transition shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 cursor-pointer mt-2"
-          >
-            <div
-              v-if="loading"
-              class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-            ></div>
-            <span>{{ loading ? 'Mendaftarkan...' : 'Buat Akun Anggota' }}</span>
-          </button>
-        </form>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5" for="reg-pass">Kata Sandi (Min. 8)</label>
+                <div class="relative">
+                  <Lock class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <input
+                    id="reg-pass"
+                    v-model="regPassword"
+                    type="password"
+                    required
+                    minlength="8"
+                    autocomplete="new-password"
+                    placeholder="••••••••"
+                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5" for="reg-pass2">Konfirmasi Sandi</label>
+                <div class="relative">
+                  <Lock class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <input
+                    id="reg-pass2"
+                    v-model="regPasswordConfirm"
+                    type="password"
+                    required
+                    minlength="8"
+                    autocomplete="new-password"
+                    placeholder="••••••••"
+                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <button
+              :disabled="loading"
+              type="submit"
+              class="w-full py-3 bg-gradient-to-r from-[#248900] to-[#14532d] hover:brightness-[1.07] text-white font-bold rounded-2xl text-sm transition shadow-lg shadow-[#248900]/30 flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-70"
+            >
+              <div
+                v-if="loading"
+                class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+              ></div>
+              <span>{{ loading ? 'Mendaftarkan...' : 'Buat Akun Anggota' }}</span>
+            </button>
+          </form>
+
+          <p class="mt-5 text-center text-[11px] leading-relaxed text-slate-400">
+            Dengan masuk, kamu menyetujui tata tertib perpustakaan
+            SDN 027 Balikpapan Utara.
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -197,9 +258,13 @@ import { useRouter, useRoute } from 'vue-router';
 import api from '../services/api';
 import { authStore } from '../stores/auth';
 import { toastStore } from '../stores/toast';
+import schoolImg from '../assets/library-frontend/sd027.jpg';
 import {
-  Sparkles,
+  Library,
+  BookOpen,
+  Bookmark,
   ShieldCheck,
+  Zap,
   User,
   Mail,
   Lock,

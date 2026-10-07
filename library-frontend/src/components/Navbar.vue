@@ -1,41 +1,47 @@
 <template>
   <header
-    class="sticky top-0 z-40 backdrop-blur-xl bg-white/85 border-b border-slate-200/80 transition-all"
+    class="sticky top-0 z-40 overflow-x-clip border-b border-[#e2e8e0]/90 bg-white/90 shadow-[0_8px_30px_-18px_rgba(12,36,18,0.35)] backdrop-blur-xl transition-all"
   >
+    <!-- Tipis aksen hijau khas sekolah -->
+    <div class="h-1 w-full bg-gradient-to-r from-[#14532d] via-[#248900] to-[#8bcf78]" aria-hidden="true"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20">
+      <div class="flex items-center justify-between gap-3 h-[4.5rem]">
         <!-- Brand Logo -->
-        <router-link to="/" class="flex items-center gap-3 group">
-          <img
-            :src="brandLogo"
-            alt="Logo PerpusKu"
-            class="h-10 w-16 shrink-0 object-contain transition-transform duration-200 group-hover:scale-105"
-          />
-          <div>
+        <router-link to="/" class="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3 group" aria-label="PerpusKu - Beranda">
+          <span class="relative shrink-0">
+            <img
+              :src="brandLogo"
+              alt="Logo Perpustakaan SDN 027"
+              class="h-9 w-14 sm:h-11 sm:w-[4.25rem] shrink-0 rounded-xl bg-white object-contain p-1 ring-1 ring-slate-200/80 transition-transform duration-200 group-hover:scale-[1.04]"
+            />
+            <span class="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" aria-hidden="true"></span>
+          </span>
+          <div class="min-w-0">
             <span
-              class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-800 bg-clip-text text-transparent"
+              class="block truncate text-lg sm:text-xl font-extrabold leading-none tracking-tight text-slate-900"
             >
-              Perpus<span class="text-indigo-600">Ku</span>
+              Perpus<span class="text-[#248900]">Ku</span>
             </span>
             <span
-              class="hidden sm:block text-[11px] font-medium text-slate-400 tracking-wider uppercase"
+              class="mt-1 hidden truncate text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 sm:block"
             >
-              Perpustakaan Digital SDN 027 Balikpapan Utara
+              SDN 027 Balikpapan Utara
             </span>
           </div>
         </router-link>
 
         <!-- Desktop Navigation Links -->
         <nav
-          class="hidden md:flex items-center gap-1.5 bg-slate-100/70 p-1.5 rounded-2xl border border-slate-200/60"
+          aria-label="Navigasi utama"
+          class="hidden items-center gap-1 rounded-2xl border border-slate-200/70 bg-[#f1f5f0]/80 p-1.5 md:flex"
         >
           <router-link
             to="/"
-            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
+            class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200"
             :class="
               $route.path === '/'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                ? 'bg-white text-[#1c6d00] shadow-[0_8px_20px_-12px_rgba(36,137,0,0.55)] ring-1 ring-[#248900]/20'
+                : 'text-slate-600 hover:bg-white/70 hover:text-slate-900'
             "
           >
             <Library class="w-4 h-4" />
@@ -45,11 +51,11 @@
           <router-link
             v-if="authStore.isAuthenticated()"
             to="/history"
-            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
+            class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200"
             :class="
               $route.path === '/history'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                ? 'bg-white text-[#1c6d00] shadow-[0_8px_20px_-12px_rgba(36,137,0,0.55)] ring-1 ring-[#248900]/20'
+                : 'text-slate-600 hover:bg-white/70 hover:text-slate-900'
             "
           >
             <History class="w-4 h-4" />
@@ -59,11 +65,11 @@
           <router-link
             v-if="authStore.isAuthenticated()"
             to="/reading-list"
-            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
+            class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200"
             :class="
               $route.path === '/reading-list'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                ? 'bg-white text-[#1c6d00] shadow-[0_8px_20px_-12px_rgba(36,137,0,0.55)] ring-1 ring-[#248900]/20'
+                : 'text-slate-600 hover:bg-white/70 hover:text-slate-900'
             "
           >
             <Bookmark class="w-4 h-4" />
@@ -74,11 +80,11 @@
           <router-link
             v-if="authStore.isAdmin()"
             to="/admin/books"
-            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
+            class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200"
             :class="
               $route.path.startsWith('/admin')
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-indigo-600 hover:bg-white/50'
+                ? 'bg-[#248900] text-white shadow-[0_10px_24px_-12px_rgba(36,137,0,0.7)]'
+                : 'text-slate-600 hover:bg-white/70 hover:text-[#1c6d00]'
             "
           >
             <ShieldCheck class="w-4 h-4" />
@@ -90,29 +96,29 @@
         <div class="hidden md:flex items-center gap-3">
           <template v-if="authStore.isAuthenticated()">
             <div
-              class="flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-2xl bg-slate-50 border border-slate-200/80"
+              class="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white py-1.5 pl-2 pr-3 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.5)]"
             >
               <div
-                class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs uppercase text-white shadow-xs"
+                class="flex h-9 w-9 items-center justify-center rounded-xl text-xs font-bold uppercase text-white"
                 :class="
                   authStore.isAdmin()
                     ? 'bg-gradient-to-tr from-amber-500 to-orange-500'
-                    : 'bg-gradient-to-tr from-indigo-500 to-violet-500'
+                    : 'bg-gradient-to-tr from-[#248900] to-[#14532d]'
                 "
               >
                 {{ getUserInitials() }}
               </div>
               <div class="text-left">
-                <div class="text-xs font-bold text-slate-800 leading-tight">
+                <div class="max-w-[10rem] truncate text-xs font-bold leading-tight text-slate-800">
                   {{ authStore.user?.name }}
                 </div>
-                <div class="flex items-center gap-1.5">
+                <div class="mt-1 flex items-center gap-1.5">
                   <span
-                    class="text-[10px] font-bold px-1.5 py-0.2 rounded-md tracking-wider uppercase"
+                    class="rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider"
                     :class="
                       authStore.isAdmin()
                         ? 'bg-amber-100 text-amber-800'
-                        : 'bg-indigo-100 text-indigo-800'
+                        : 'bg-[#eef9e6] text-[#1c6d00]'
                     "
                   >
                     {{ authStore.isAdmin() ? "Pustakawan" : "Anggota" }}
@@ -124,7 +130,7 @@
             <button
               @click="handleLogout"
               title="Keluar dari akun"
-              class="p-2.5 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer border border-transparent hover:border-rose-100"
+              class="rounded-xl border border-transparent p-2.5 text-slate-500 transition hover:border-rose-100 hover:bg-rose-50 hover:text-rose-600 cursor-pointer"
             >
               <LogOut class="w-5 h-5" />
             </button>
@@ -133,7 +139,7 @@
           <template v-else>
             <router-link
               to="/login"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/35 transition duration-200 cursor-pointer"
+              class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#248900] to-[#14532d] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_-14px_rgba(36,137,0,0.65)] transition duration-200 hover:brightness-[1.06] cursor-pointer"
             >
               <User class="w-4 h-4" />
               <span>Masuk Akun</span>
@@ -142,10 +148,12 @@
         </div>
 
         <!-- Mobile Menu Toggle Button -->
-        <div class="flex md:hidden">
+        <div class="flex shrink-0 md:hidden">
           <button
             @click="mobileMenuOpen = !mobileMenuOpen"
-            class="p-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+            class="rounded-xl border border-slate-200/80 bg-white p-2.5 text-slate-700 shadow-sm transition hover:bg-slate-50 cursor-pointer"
+            :aria-expanded="mobileMenuOpen ? 'true' : 'false'"
+            aria-label="Buka menu navigasi"
           >
             <Menu v-if="!mobileMenuOpen" class="w-6 h-6" />
             <X v-else class="w-6 h-6" />
@@ -165,15 +173,15 @@
     >
       <div
         v-if="mobileMenuOpen"
-        class="md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-3"
+        class="border-t border-slate-200 bg-white/95 px-4 pt-3 pb-6 space-y-2 backdrop-blur-xl md:hidden"
       >
         <router-link
           @click="mobileMenuOpen = false"
           to="/"
-          class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition"
+          class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition"
           :class="
             $route.path === '/'
-              ? 'bg-indigo-50 text-indigo-600'
+              ? 'bg-[#eef9e6] text-[#1c6d00] ring-1 ring-[#248900]/20'
               : 'text-slate-700 hover:bg-slate-50'
           "
         >
@@ -185,7 +193,8 @@
           <router-link
             @click="mobileMenuOpen = false"
             to="/history"
-            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition text-slate-700 hover:bg-slate-50"
+            class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition"
+            :class="$route.path === '/history' ? 'bg-[#eef9e6] text-[#1c6d00]' : 'text-slate-700 hover:bg-slate-50'"
           >
             <History class="w-5 h-5" />
             <span>Riwayat</span>
@@ -193,7 +202,8 @@
           <router-link
             @click="mobileMenuOpen = false"
             to="/reading-list"
-            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition text-slate-700 hover:bg-slate-50"
+            class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition"
+            :class="$route.path === '/reading-list' ? 'bg-[#eef9e6] text-[#1c6d00]' : 'text-slate-700 hover:bg-slate-50'"
           >
             <Bookmark class="w-5 h-5" />
             <span>Reading List</span>
@@ -204,7 +214,7 @@
           v-if="authStore.isAdmin()"
           @click="mobileMenuOpen = false"
           to="/admin/books"
-          class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-indigo-600 text-white"
+          class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition bg-[#248900] text-white"
         >
           <ShieldCheck class="w-5 h-5" />
           <span>Koleksi Buku</span>
@@ -213,23 +223,23 @@
         <div class="pt-3 border-t border-slate-100">
           <template v-if="authStore.isAuthenticated()">
             <div
-              class="flex items-center justify-between px-3 py-2 bg-slate-50 rounded-xl mb-3"
+              class="mb-3 flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2"
             >
-              <div>
+              <div class="min-w-0">
                 <p class="text-xs text-slate-500">Login sebagai</p>
-                <p class="text-sm font-bold text-slate-900">
+                <p class="truncate text-sm font-bold text-slate-900">
                   {{ authStore.user?.name }}
                 </p>
               </div>
               <span
-                class="text-xs px-2 py-0.5 rounded-md font-semibold bg-indigo-100 text-indigo-700 uppercase"
+                class="rounded-md bg-[#eef9e6] px-2 py-0.5 text-xs font-semibold uppercase text-[#1c6d00]"
               >
                 {{ authStore.user?.role }}
               </span>
             </div>
             <button
               @click="handleLogout"
-              class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 transition cursor-pointer"
+              class="flex w-full items-center justify-center gap-2 rounded-xl bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-100 cursor-pointer"
             >
               <LogOut class="w-4 h-4" />
               <span>Keluar (Logout)</span>
@@ -239,7 +249,7 @@
             <router-link
               @click="mobileMenuOpen = false"
               to="/login"
-              class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition"
+              class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#248900] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1c6d00]"
             >
               <User class="w-4 h-4" />
               <span>Masuk Akun</span>

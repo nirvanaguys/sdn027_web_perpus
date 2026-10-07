@@ -1,17 +1,17 @@
 <template>
   <div
     ref="readerContainer"
-    class="min-h-screen bg-slate-900 text-slate-100 flex flex-col select-none overflow-hidden"
+    class="min-h-screen bg-[#0a150d] text-slate-100 flex flex-col select-none overflow-hidden"
   >
     <!-- Top Bar Navigation & Controls -->
-    <header class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 z-30 shrink-0">
+    <header class="border-b border-white/10 bg-[#0c1f11]/92 px-4 py-3 z-30 shrink-0 backdrop-blur-md">
       <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
         <!-- Left: Back Button & Book Info -->
         <div class="flex items-center gap-3 min-w-0">
           <button
             @click="goBack"
             title="Kembali ke Katalog"
-            class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer shrink-0"
+            class="p-2 rounded-xl border border-white/10 bg-white/10 hover:bg-[#248900] text-slate-200 hover:text-white transition cursor-pointer shrink-0"
           >
             <ArrowLeft class="w-5 h-5" />
           </button>
@@ -46,7 +46,7 @@
               @click="zoomOut"
               :disabled="zoomScale <= 0.6"
               title="Perkecil (Zoom Out)"
-              class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition disabled:opacity-40 cursor-pointer"
+              class="p-2 rounded-xl border border-white/10 bg-white/10 hover:bg-[#248900] text-slate-200 hover:text-white transition disabled:opacity-40 cursor-pointer"
             >
               <ZoomOut class="w-4 h-4" />
             </button>
@@ -57,7 +57,7 @@
               @click="zoomIn"
               :disabled="zoomScale >= 2.5"
               title="Perbesar (Zoom In)"
-              class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition disabled:opacity-40 cursor-pointer"
+              class="p-2 rounded-xl border border-white/10 bg-white/10 hover:bg-[#248900] text-slate-200 hover:text-white transition disabled:opacity-40 cursor-pointer"
             >
               <ZoomIn class="w-4 h-4" />
             </button>
@@ -75,7 +75,7 @@
             <button
               @click="decreaseFontSize"
               title="Perkecil Ukuran Teks"
-              class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer"
+              class="p-2 rounded-xl border border-white/10 bg-white/10 hover:bg-[#248900] text-slate-200 hover:text-white transition cursor-pointer"
             >
               <span class="text-xs font-bold">A-</span>
             </button>
@@ -85,7 +85,7 @@
             <button
               @click="increaseFontSize"
               title="Perbesar Ukuran Teks"
-              class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer"
+              class="p-2 rounded-xl border border-white/10 bg-white/10 hover:bg-[#248900] text-slate-200 hover:text-white transition cursor-pointer"
             >
               <span class="text-xs font-bold">A+</span>
             </button>
@@ -93,8 +93,8 @@
               v-if="toc.length > 0"
               @click="showToc = !showToc"
               title="Daftar Isi"
-              class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer relative"
-              :class="showToc ? 'bg-indigo-600 text-white' : ''"
+              class="p-2 rounded-xl border border-white/10 bg-white/10 hover:bg-[#248900] text-slate-200 hover:text-white transition cursor-pointer relative"
+              :class="showToc ? '!bg-[#248900] !text-white' : ''"
             >
               <List class="w-4 h-4" />
             </button>
@@ -104,7 +104,7 @@
           <button
             @click="toggleFullscreen"
             title="Layar Penuh (Fullscreen)"
-            class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer"
+            class="p-2 rounded-xl border border-white/10 bg-white/10 hover:bg-[#248900] text-slate-200 hover:text-white transition cursor-pointer"
           >
             <Minimize v-if="isFullscreen" class="w-4 h-4" />
             <Maximize v-else class="w-4 h-4" />
@@ -117,13 +117,13 @@
     <div class="flex-1 relative overflow-hidden flex flex-col justify-center items-center">
       <!-- Loading State -->
       <div v-if="loading" class="text-center space-y-4 p-8">
-        <div class="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mx-auto"></div>
+        <div class="w-12 h-12 border-4 border-[#248900]/25 border-t-[#4fc42e] rounded-full animate-spin mx-auto"></div>
         <p class="text-sm font-medium text-slate-300">{{ loadingMessage }}</p>
         <p class="text-xs text-slate-500">Mempersiapkan dokumen ebook secara aman...</p>
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error" class="text-center space-y-4 max-w-md p-6 bg-slate-800/80 rounded-3xl border border-slate-700">
+      <div v-else-if="error" class="text-center space-y-4 max-w-md p-6 sm:p-8 bg-white/[0.06] rounded-3xl border border-white/10 backdrop-blur">
         <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
           <AlertCircle class="w-6 h-6" />
         </div>
@@ -132,7 +132,7 @@
         <div class="flex items-center justify-center gap-3 pt-2">
           <button
             @click="fetchBookAndLoad"
-            class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition cursor-pointer"
+            class="px-4 py-2 rounded-xl bg-[#248900] hover:bg-[#1c6d00] text-white text-xs font-semibold transition cursor-pointer"
           >
             Coba Lagi
           </button>
@@ -159,17 +159,17 @@
       <!-- EPUB Viewport -->
       <div
         v-show="format === 'epub' && !loading && !error"
-        class="w-full h-full relative flex items-center justify-center"
+        class="w-full flex-1 min-h-0 relative flex items-center justify-center"
       >
         <div
           ref="epubViewerRef"
-          class="w-full h-full max-w-4xl mx-auto px-4 sm:px-8 py-4 overflow-hidden"
+          class="w-full h-[calc(100vh-230px)] min-h-[420px] max-w-4xl mx-auto px-4 sm:px-8 py-4 overflow-hidden"
         ></div>
 
         <!-- Left Navigation Arrow (EPUB) -->
         <button
           @click="prevEpubPage"
-          class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-3 rounded-2xl bg-slate-800/80 hover:bg-indigo-600 text-white shadow-xl backdrop-blur-md transition cursor-pointer opacity-80 hover:opacity-100 z-20"
+          class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-3 rounded-2xl border border-white/10 bg-black/55 hover:bg-[#248900] text-white shadow-xl backdrop-blur-md transition cursor-pointer opacity-80 hover:opacity-100 z-20"
           title="Halaman Sebelumnya"
         >
           <ChevronLeft class="w-5 h-5 sm:w-6 sm:h-6" />
@@ -178,7 +178,7 @@
         <!-- Right Navigation Arrow (EPUB) -->
         <button
           @click="nextEpubPage"
-          class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-3 rounded-2xl bg-slate-800/80 hover:bg-indigo-600 text-white shadow-xl backdrop-blur-md transition cursor-pointer opacity-80 hover:opacity-100 z-20"
+          class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-3 rounded-2xl border border-white/10 bg-black/55 hover:bg-[#248900] text-white shadow-xl backdrop-blur-md transition cursor-pointer opacity-80 hover:opacity-100 z-20"
           title="Halaman Selanjutnya"
         >
           <ChevronRight class="w-5 h-5 sm:w-6 sm:h-6" />
@@ -230,7 +230,7 @@
     <!-- Bottom Navigation Bar for PDF -->
     <footer
       v-if="format === 'pdf' && !loading && !error"
-      class="bg-slate-950/90 backdrop-blur-md border-t border-slate-800 px-4 py-2.5 z-30 shrink-0"
+      class="border-t border-white/10 bg-[#0c1f11]/92 px-4 py-2.5 z-30 shrink-0 backdrop-blur-md"
     >
       <div class="max-w-md mx-auto flex items-center justify-between gap-3">
         <button
@@ -432,22 +432,48 @@ const resetZoom = () => {
 };
 
 // --- EPUB Logic ---
+const handleEpubResize = () => {
+  try {
+    epubRendition?.resize();
+  } catch {}
+};
+
 const initEpub = async (arrayBuffer) => {
   try {
     await nextTick();
     if (!epubViewerRef.value) return;
 
+    // Bersihkan instance lama agar iframe tidak menumpuk / blank
+    if (epubBook) {
+      try {
+        await epubBook.destroy();
+      } catch {}
+      epubBook = null;
+      epubRendition = null;
+    }
+    window.removeEventListener('resize', handleEpubResize);
     epubViewerRef.value.innerHTML = '';
-    epubBook = ePub(arrayBuffer);
+
+    // Pastikan yang dikirim ke epub.js adalah ArrayBuffer murni
+    const data = arrayBuffer instanceof ArrayBuffer ? arrayBuffer.slice(0) : arrayBuffer;
+    epubBook = ePub(data);
+    await epubBook.ready;
 
     epubRendition = epubBook.renderTo(epubViewerRef.value, {
       width: '100%',
       height: '100%',
       spread: 'none',
       flow: 'paginated',
+      minSpreadWidth: 800,
     });
 
+    window.addEventListener('resize', handleEpubResize);
+
     await epubRendition.display();
+    applyEpubFontSize();
+    // Paksa hitung ulang ukuran iframe setelah layout selesai (sering 0px kalau tidak di-resize)
+    await nextTick();
+    handleEpubResize();
 
     // Load Navigation / TOC
     const nav = await epubBook.loaded.navigation;
@@ -457,11 +483,9 @@ const initEpub = async (arrayBuffer) => {
         href: item.href,
       }));
     }
-
-    applyEpubFontSize();
   } catch (err) {
     console.error('Error loading EPUB:', err);
-    error.value = 'Gagal memproses format file EPUB.';
+    error.value = 'Gagal memproses format file EPUB. File mungkin rusak atau tidak standar.';
   }
 };
 
@@ -576,6 +600,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange);
   window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('resize', handleEpubResize);
 
   if (objectUrl) {
     URL.revokeObjectURL(objectUrl);
