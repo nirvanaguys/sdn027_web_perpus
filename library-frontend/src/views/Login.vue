@@ -8,41 +8,47 @@
     </div>
 
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-      <!-- Panel kiri: branding -->
-      <div class="anim-fade-up hidden lg:block text-white">
+      <!-- Panel kiri: branding (tengah vertikal, sejajar kartu login) -->
+      <div class="anim-fade-up hidden lg:flex flex-col justify-center self-stretch py-10 text-white">
+        <div>
         <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-50 backdrop-blur">
           <BookOpen class="h-4 w-4 text-emerald-200" />
           Perpustakaan Ebook Digital
         </div>
         <h1 class="mt-5 text-4xl xl:text-5xl font-extrabold leading-[1.08] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
-          Satu akun untuk
+          Perpustakaan Digital
           <span class="block bg-gradient-to-r from-[#c9ecb4] via-white to-[#d9f2c7] bg-clip-text text-transparent">
-            semua bacaan sekolah.
+            SDN 027 Balikpapan Utara
           </span>
         </h1>
         <p class="mt-4 max-w-md text-sm leading-relaxed text-emerald-50/90">
           Masuk untuk membaca ebook, menyimpan Reading List, dan melihat riwayat
           bacaanmu. Akun baru otomatis menjadi anggota perpustakaan.
         </p>
-        <ul class="mt-6 space-y-3 text-sm">
-          <li class="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur">
-            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-100"><Zap class="h-4 w-4" /></span>
-            <span class="text-emerald-50"><strong class="font-bold text-white">Baca online</strong> tanpa unduh & tanpa antre.</span>
-          </li>
-          <li class="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur">
-            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-100"><Bookmark class="h-4 w-4" /></span>
-            <span class="text-emerald-50"><strong class="font-bold text-white">Simpan favorit</strong> ke Reading List pribadimu.</span>
-          </li>
-          <li class="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur">
-            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-100"><ShieldCheck class="h-4 w-4" /></span>
-            <span class="text-emerald-50"><strong class="font-bold text-white">Aman</strong> untuk siswa, guru, dan pustakawan.</span>
-          </li>
-        </ul>
+        </div>
+      </div>
+
+      <!-- Branding ringkas untuk layar kecil (panel kiri disembunyikan di mobile) -->
+      <div class="anim-fade-up lg:hidden text-white text-center">
+        <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-50 backdrop-blur">
+          <BookOpen class="h-4 w-4 text-emerald-200" />
+          Perpustakaan Ebook Digital
+        </div>
+        <h1 class="mt-4 text-3xl font-extrabold leading-tight tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
+          Perpustakaan Digital
+          <span class="block bg-gradient-to-r from-[#c9ecb4] via-white to-[#d9f2c7] bg-clip-text text-transparent">
+            SDN 027 Balikpapan Utara
+          </span>
+        </h1>
+        <p class="mt-3 max-w-md mx-auto text-xs leading-relaxed text-emerald-50/90">
+          Masuk untuk membaca ebook, menyimpan Reading List, dan melihat riwayat
+          bacaanmu. Akun baru otomatis menjadi anggota perpustakaan.
+        </p>
       </div>
 
       <!-- Card form -->
       <div class="anim-fade-up-1 mx-auto w-full max-w-md">
-        <div class="rounded-3xl border border-white/40 bg-white p-7 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.6)] sm:p-8 relative overflow-hidden">
+        <div class="rounded-3xl border-2 border-[#14532d] bg-white p-7 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.6)] sm:p-8 relative overflow-hidden">
           <div class="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#14532d] via-[#248900] to-[#8bcf78]" aria-hidden="true"></div>
           <!-- Header Branding -->
           <div class="text-center mb-6">
@@ -75,31 +81,6 @@
             >
               Daftar Akun
             </button>
-          </div>
-
-          <!-- 1-Click Quick Demo Accounts (Only on Login tab) -->
-          <div v-if="!isRegister" class="mb-5 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-              Akses Cepat Akun Demo (1-Click Login):
-            </span>
-            <div class="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                @click="fillDemo('admin')"
-                class="px-3 py-2 rounded-xl text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <ShieldCheck class="w-3.5 h-3.5" />
-                <span>Admin Demo</span>
-              </button>
-              <button
-                type="button"
-                @click="fillDemo('member')"
-                class="px-3 py-2 rounded-xl text-xs font-semibold bg-[#eef9e6] text-[#1c6d00] border border-[#248900]/25 hover:bg-[#dcefd0] transition flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <User class="w-3.5 h-3.5" />
-                <span>Member Demo</span>
-              </button>
-            </div>
           </div>
 
           <!-- Login Form -->
@@ -262,9 +243,6 @@ import schoolImg from '../assets/library-frontend/sd027.jpg';
 import {
   Library,
   BookOpen,
-  Bookmark,
-  ShieldCheck,
-  Zap,
   User,
   Mail,
   Lock,
@@ -281,25 +259,14 @@ const showPassword = ref(false);
 const loading = ref(false);
 
 // Login state
-const email = ref('admin@perpustakaan.com');
-const password = ref('admin123');
+const email = ref('');
+const password = ref('');
 
 // Register state
 const regName = ref('');
 const regEmail = ref('');
 const regPassword = ref('');
 const regPasswordConfirm = ref('');
-
-const fillDemo = (role) => {
-  if (role === 'admin') {
-    email.value = 'admin@perpustakaan.com';
-    password.value = 'admin123';
-  } else {
-    email.value = 'member@perpustakaan.com';
-    password.value = 'member123';
-  }
-  handleLogin();
-};
 
 const handleLogin = async () => {
   loading.value = true;

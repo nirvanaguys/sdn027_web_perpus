@@ -140,6 +140,7 @@
             class="bg-slate-50/80 text-slate-500 uppercase text-[11px] tracking-wider font-semibold"
           >
             <tr>
+              <th class="px-6 py-4">Sampul</th>
               <th class="px-6 py-4">Judul Ebook & Penulis</th>
               <th class="px-6 py-4">Kategori</th>
               <th class="px-6 py-4">Penerbit & ISBN</th>
@@ -154,6 +155,21 @@
               :key="book.id"
               class="hover:bg-slate-50/70 transition-colors"
             >
+              <td class="px-6 py-4">
+                <img
+                  v-if="book.cover_url"
+                  :src="assetUrl(book.cover_url)"
+                  :alt="`Sampul ${book.title}`"
+                  loading="lazy"
+                  class="h-16 w-12 rounded-lg object-cover ring-1 ring-slate-200"
+                />
+                <div
+                  v-else
+                  class="flex h-16 w-12 items-end rounded-lg bg-gradient-to-br from-[#14532d] to-[#0e2f14] p-1.5 text-[10px] font-bold leading-tight text-white"
+                >
+                  <span class="line-clamp-4">{{ book.title }}</span>
+                </div>
+              </td>
               <td class="px-6 py-4">
                 <div class="font-bold text-slate-900 leading-snug">
                   {{ book.title }}

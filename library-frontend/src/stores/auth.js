@@ -1,7 +1,19 @@
 import { reactive } from 'vue';
 
+// localStorage bisa berisi JSON rusak (mis. tertulis "undefined" oleh versi
+// lama). Tanpa try/catch, JSON.parse melempar error saat modul dimuat dan
+// SELURUH aplikasi jadi halaman putih blank — termasuk /login.
+const readStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null');
+  } catch {
+    localStorage.removeItem('user');
+    return null;
+  }
+};
+
 export const authStore = reactive({
-  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  user: readStoredUser(),
   token: localStorage.getItem('token') || null,
 
   setAuth(user, token) {

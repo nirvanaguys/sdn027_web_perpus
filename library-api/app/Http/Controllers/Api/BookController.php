@@ -137,6 +137,21 @@ class BookController extends Controller
         unset($validated['cover']);
         $book = Book::create($validated);
 
+        // Sampul = halaman depan file yang diunggah. Jika admin mengunggah
+        // sampul manual, itu yang dipakai. Jika tidak, ekstrak halaman
+        // depan ebook; terakhir fallback ke sampul generatif.
+        if (empty($book->cover_image) && !empty($book->file_path)) {
+            $extracted = \App\Support\EbookCoverExtractor::extract($book->fresh());
+            if ($extracted) {
+                $book->cover_image = $extracted;
+                $book->saveQuietly();
+            }
+        }
+        if (empty($book->cover_image)) {
+            $book->cover_image = \App\Support\BookCoverGenerator::generate($book->fresh());
+            $book->saveQuietly();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Ebook berhasil ditambahkan',
@@ -190,6 +205,20 @@ class BookController extends Controller
         unset($validated['file']);
         unset($validated['cover']);
         $book->update($validated);
+        $book->refresh();
+
+        // Jika admin mengganti file ebook tanpa mengunggah sampul manual,
+        // segarkan sampul dari halaman depan file yang baru.
+        if ($request->hasFile('file') && !$request->hasFile('cover')) {
+            // Hapus sampul lama hasil ekstrak/generatif agar tidak menumpuk.
+            if ($book->cover_image && Storage::disk('public')->exists($book->cover_image)) {
+                Storage::disk('public')->delete($book->cover_image);
+            }
+            $extracted = \App\Support\EbookCoverExtractor::extract($book);
+            $book->cover_image = $extracted
+                ?: \App\Support\BookCoverGenerator::generate($book);
+            $book->saveQuietly();
+        }
 
         return response()->json([
             'success' => true,

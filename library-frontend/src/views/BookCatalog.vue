@@ -210,10 +210,11 @@
             class="relative aspect-[3/4] overflow-hidden bg-[#0e2f14] text-white"
           >
             <img
-              v-if="book.cover_url"
+              v-if="book.cover_url && !brokenCovers.has(book.id)"
               :src="assetUrl(book.cover_url)"
               :alt="`Sampul ${book.title}`"
               loading="lazy"
+              @error="onCoverError(book)"
               class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
             />
             <div
@@ -376,9 +377,16 @@
           class="max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl max-w-lg w-full border border-slate-100"
         >
           <div
-            class="p-6 text-white relative overflow-hidden"
-            :class="getCardGradient(selectedDetailBook.id)"
+            class="flex gap-4 p-6 text-white relative overflow-hidden"
+            :class="selectedDetailBook.cover_url ? 'bg-[#0e2f14]' : getCardGradient(selectedDetailBook.id)"
           >
+            <img
+              v-if="selectedDetailBook.cover_url"
+              :src="assetUrl(selectedDetailBook.cover_url)"
+              :alt="`Sampul ${selectedDetailBook.title}`"
+              class="h-44 w-32 sm:h-52 sm:w-36 shrink-0 rounded-xl object-cover shadow-lg ring-1 ring-white/30"
+            />
+            <div class="min-w-0 flex-1">
             <div class="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl" aria-hidden="true"></div>
             <button
               @click="selectedDetailBook = null"
@@ -403,6 +411,7 @@
             <p class="text-sm text-white/80 mt-1">
               Karya {{ selectedDetailBook.author }}
             </p>
+            </div>
           </div>
 
           <div class="p-6 space-y-4">
@@ -514,6 +523,8 @@ const loading = ref(false);
 
 const selectedDetailBook = ref(null);
 const savedBookIds = ref(new Set());
+// ID buku yang gambar sampulnya gagal dimuat -> tampilkan fallback gradien.
+const brokenCovers = ref(new Set());
 
 let debounceTimer = null;
 
@@ -600,6 +611,12 @@ const filteredBooks = computed(() => {
 
 const openDetail = (book) => {
   selectedDetailBook.value = book;
+};
+
+const onCoverError = (book) => {
+  const next = new Set(brokenCovers.value);
+  next.add(book.id);
+  brokenCovers.value = next;
 };
 
 // Handle Click "Baca Ebook"
