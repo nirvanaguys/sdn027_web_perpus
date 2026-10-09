@@ -82,13 +82,27 @@
             to="/admin/books"
             class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200"
             :class="
-              $route.path.startsWith('/admin')
+              $route.path === '/admin/books'
                 ? 'bg-[#248900] text-white shadow-[0_10px_24px_-12px_rgba(36,137,0,0.7)]'
                 : 'text-slate-600 hover:bg-white/70 hover:text-[#1c6d00]'
             "
           >
             <ShieldCheck class="w-4 h-4" />
             <span>Koleksi Buku</span>
+          </router-link>
+
+          <router-link
+            v-if="authStore.isAdmin()"
+            to="/admin/users"
+            class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200"
+            :class="
+              $route.path === '/admin/users'
+                ? 'bg-[#248900] text-white shadow-[0_10px_24px_-12px_rgba(36,137,0,0.7)]'
+                : 'text-slate-600 hover:bg-white/70 hover:text-[#1c6d00]'
+            "
+          >
+            <Users class="w-4 h-4" />
+            <span>Kelola Akun</span>
           </router-link>
         </nav>
 
@@ -220,6 +234,21 @@
           <span>Koleksi Buku</span>
         </router-link>
 
+        <router-link
+          v-if="authStore.isAdmin()"
+          @click="mobileMenuOpen = false"
+          to="/admin/users"
+          class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition"
+          :class="
+            $route.path === '/admin/users'
+              ? 'bg-[#248900] text-white'
+              : 'text-slate-700 hover:bg-slate-50'
+          "
+        >
+          <Users class="w-5 h-5" />
+          <span>Kelola Akun</span>
+        </router-link>
+
         <div class="pt-3 border-t border-slate-100">
           <template v-if="authStore.isAuthenticated()">
             <div
@@ -274,6 +303,7 @@ import {
   History,
   Bookmark,
   User,
+  Users,
   LogOut,
   Menu,
   X,

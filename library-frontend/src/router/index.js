@@ -6,6 +6,8 @@ import Login from "../views/Login.vue";
 import AdminDashboard from "../views/AdminDashboard.vue";
 import EbookReader from "../views/EbookReader.vue";
 import ReadingLibrary from "../views/ReadingLibrary.vue";
+import UserManagement from "../views/UserManagement.vue";
+import ForgotPassword from "../views/ForgotPassword.vue";
 
 const routes = [
   {
@@ -39,9 +41,21 @@ const routes = [
     meta: { guestOnly: true },
   },
   {
+    path: "/forgot-password",
+    name: "ForgotPassword",
+    component: ForgotPassword,
+    meta: { guestOnly: true },
+  },
+  {
     path: "/admin/books",
     name: "AdminDashboard",
     component: AdminDashboard,
+    meta: { requiresAuth: true, role: "admin" },
+  },
+  {
+    path: "/admin/users",
+    name: "UserManagement",
+    component: UserManagement,
     meta: { requiresAuth: true, role: "admin" },
   },
   {

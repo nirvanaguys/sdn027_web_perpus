@@ -17,6 +17,7 @@ class Book extends Model
         'publisher',
         'isbn',
         'category',
+        'grade_level',
         'description',
         'cover_image',
         'file_path',

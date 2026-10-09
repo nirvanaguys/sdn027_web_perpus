@@ -130,6 +130,19 @@
             <option value="epub">EPUB Saja</option>
           </select>
         </div>
+
+        <div class="flex items-center gap-2 self-end sm:self-auto text-xs">
+          <span class="text-slate-400">Filter Kelas:</span>
+          <select
+            v-model="gradeFilter"
+            class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+          >
+            <option value="">Semua Kelas</option>
+            <option v-for="g in gradeLevels" :key="g.value" :value="g.value">
+              {{ g.label }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <div class="overflow-x-auto">
@@ -143,6 +156,7 @@
               <th class="px-6 py-4">Sampul</th>
               <th class="px-6 py-4">Judul Ebook & Penulis</th>
               <th class="px-6 py-4">Kategori</th>
+              <th class="px-6 py-4">Kelas</th>
               <th class="px-6 py-4">Penerbit & ISBN</th>
               <th class="px-6 py-4 text-center">Format</th>
               <th class="px-6 py-4 text-center">Ukuran File</th>
@@ -183,6 +197,13 @@
                   class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700"
                 >
                   {{ book.category || "Umum" }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <span
+                  class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#eef9e6] text-[#1c6d00]"
+                >
+                  {{ gradeLabel(book.grade_level) }}
                 </span>
               </td>
               <td class="px-6 py-4">
@@ -238,7 +259,7 @@
             </tr>
 
             <tr v-if="filteredTableBooks.length === 0">
-              <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+              <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                 <BookOpen class="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <span>Tidak ada data ebook yang sesuai.</span>
               </td>
@@ -353,6 +374,23 @@
                   class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
                 />
               </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+                >Jenjang Kelas</label
+              >
+              <select
+                v-model="form.grade_level"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+              >
+                <option v-for="g in gradeLevels" :key="g.value" :value="g.value">
+                  {{ g.label }}
+                </option>
+              </select>
+              <p class="mt-1 text-xs text-slate-500">
+                Pilih kelas agar guru mudah memfilter buku pelajaran per kelas.
+              </p>
             </div>
 
             <div>
@@ -488,6 +526,22 @@ import {
 const books = ref([]);
 const tableSearch = ref("");
 const formatFilter = ref("all");
+const gradeFilter = ref("");
+
+const gradeLevels = [
+  { value: "umum", label: "Umum / Semua Kelas" },
+  { value: "kelas-1", label: "Kelas 1" },
+  { value: "kelas-2", label: "Kelas 2" },
+  { value: "kelas-3", label: "Kelas 3" },
+  { value: "kelas-4", label: "Kelas 4" },
+  { value: "kelas-5", label: "Kelas 5" },
+  { value: "kelas-6", label: "Kelas 6" },
+];
+
+const gradeLabel = (value) => {
+  const found = gradeLevels.find((g) => g.value === (value || "umum"));
+  return found ? found.label : "Umum / Semua Kelas";
+};
 
 const isModalOpen = ref(false);
 const modalMode = ref("add");
@@ -508,6 +562,7 @@ const form = ref({
   publisher: "",
   isbn: "",
   category: "Umum",
+  grade_level: "umum",
   description: "",
 });
 
@@ -550,6 +605,8 @@ const filteredTableBooks = computed(() => {
     const fmt = (b.file_format || "").toLowerCase();
     if (formatFilter.value === "pdf" && fmt !== "pdf") return false;
     if (formatFilter.value === "epub" && fmt !== "epub") return false;
+    if (gradeFilter.value && (b.grade_level || "umum") !== gradeFilter.value)
+      return false;
 
     return true;
   });
@@ -584,6 +641,7 @@ const openModal = (mode, book = null) => {
       publisher: book.publisher,
       isbn: book.isbn,
       category: book.category || "Umum",
+      grade_level: book.grade_level || "umum",
       description: book.description || "",
     };
   } else {
@@ -596,6 +654,7 @@ const openModal = (mode, book = null) => {
       publisher: "",
       isbn: "",
       category: "Umum",
+      grade_level: "umum",
       description: "",
     };
   }
@@ -611,6 +670,7 @@ const saveBook = async () => {
   formData.append("publisher", form.value.publisher);
   formData.append("isbn", form.value.isbn);
   formData.append("category", form.value.category || "Umum");
+  formData.append("grade_level", form.value.grade_level || "umum");
   if (form.value.description) {
     formData.append("description", form.value.description);
   }

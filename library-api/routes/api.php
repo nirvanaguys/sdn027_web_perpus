@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\ReadingLibraryController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,11 @@ use App\Http\Controllers\Api\ReadingLibraryController;
 */
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Lupa kata sandi mandiri (tanpa email/SMTP): verifikasi identitas
+// email + NISN/NIP -> tiket reset 10 menit -> ganti sandi baru.
+Route::post('/forgot-password/verify', [AuthController::class, 'forgotPasswordVerify']);
+Route::post('/forgot-password/reset', [AuthController::class, 'forgotPasswordReset']);
 
 // Katalog ebook publik (hanya metadata)
 Route::get('/books', [BookController::class, 'index']);
@@ -51,5 +57,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/admin/books/{id}', [BookController::class, 'update']); // Mendukung multipart upload penggantian file
         Route::put('/admin/books/{id}', [BookController::class, 'update']);
         Route::delete('/admin/books/{id}', [BookController::class, 'destroy']);
+
+        // Pengelolaan akun anggota oleh pustakawan/admin
+        Route::get('/admin/users', [UserController::class, 'index']);
+        Route::put('/admin/users/{id}', [UserController::class, 'update']);
+        Route::post('/admin/users/{id}/reset-password', [UserController::class, 'resetPassword']);
+        Route::post('/admin/users/{id}/set-active', [UserController::class, 'setActive']);
     });
 });

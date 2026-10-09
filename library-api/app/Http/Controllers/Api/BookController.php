@@ -35,6 +35,11 @@ class BookController extends Controller
             $query->where('category', $request->query('category'));
         }
 
+        // Filter jenjang kelas (kelas-1..kelas-6, umum)
+        if ($request->filled('grade_level')) {
+            $query->where('grade_level', strtolower($request->query('grade_level')));
+        }
+
         // Filter format file (pdf, epub)
         if ($request->filled('format')) {
             $query->where('file_format', strtolower($request->query('format')));
@@ -112,6 +117,7 @@ class BookController extends Controller
             'publisher'      => 'required|string|max:255',
             'isbn'           => 'required|string|unique:books,isbn|max:50',
             'category'       => 'nullable|string|max:100',
+            'grade_level'    => 'nullable|string|in:umum,kelas-1,kelas-2,kelas-3,kelas-4,kelas-5,kelas-6',
             'description'    => 'nullable|string',
             'cover'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'stock'          => 'nullable|integer|min:0',
@@ -172,6 +178,7 @@ class BookController extends Controller
             'publisher'      => 'required|string|max:255',
             'isbn'           => 'required|string|max:50|unique:books,isbn,' . $book->id,
             'category'       => 'nullable|string|max:100',
+            'grade_level'    => 'nullable|string|in:umum,kelas-1,kelas-2,kelas-3,kelas-4,kelas-5,kelas-6',
             'description'    => 'nullable|string',
             'cover'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'stock'          => 'nullable|integer|min:0',

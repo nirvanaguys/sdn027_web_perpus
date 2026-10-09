@@ -143,6 +143,17 @@
               {{ cat }}
             </option>
           </select>
+          <label class="sr-only" for="kelas">Filter jenjang kelas</label>
+          <select
+            id="kelas"
+            v-model="selectedGrade"
+            class="w-full lg:w-auto px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700 font-medium focus:ring-2 focus:ring-[#248900]/40 outline-none cursor-pointer"
+          >
+            <option value="">Semua Kelas</option>
+            <option v-for="g in gradeLevels" :key="g.value" :value="g.value">
+              {{ g.label }}
+            </option>
+          </select>
           <p class="hidden xl:block text-xs text-slate-400 whitespace-nowrap">
             Menampilkan <strong class="text-slate-700">{{ filteredBooks.length }}</strong> dari {{ allBooks.length }} ebook
           </p>
@@ -289,6 +300,11 @@
               >
                 {{ book.category || "Umum" }}
               </span>
+              <span
+                class="inline-flex items-center rounded-lg bg-[#0e2f14] px-2.5 py-1 text-[11px] font-bold text-emerald-50"
+              >
+                {{ gradeLabel(book.grade_level) }}
+              </span>
             </div>
 
             <h3
@@ -426,6 +442,12 @@
                 }}</strong>
               </div>
               <div>
+                <span class="text-slate-400 block mb-0.5">Jenjang Kelas</span>
+                <strong class="text-slate-800 text-sm font-semibold">{{
+                  gradeLabel(selectedDetailBook.grade_level)
+                }}</strong>
+              </div>
+              <div>
                 <span class="text-slate-400 block mb-0.5">Penerbit</span>
                 <strong class="text-slate-800 text-sm font-semibold">{{
                   selectedDetailBook.publisher
@@ -519,6 +541,22 @@ const allBooks = ref([]);
 const searchQuery = ref("");
 const selectedFormat = ref("all");
 const selectedCategory = ref("");
+const selectedGrade = ref("");
+
+const gradeLevels = [
+  { value: "umum", label: "Umum / Semua Kelas" },
+  { value: "kelas-1", label: "Kelas 1" },
+  { value: "kelas-2", label: "Kelas 2" },
+  { value: "kelas-3", label: "Kelas 3" },
+  { value: "kelas-4", label: "Kelas 4" },
+  { value: "kelas-5", label: "Kelas 5" },
+  { value: "kelas-6", label: "Kelas 6" },
+];
+
+const gradeLabel = (value) => {
+  const found = gradeLevels.find((g) => g.value === (value || "umum"));
+  return found ? found.label : "Umum / Semua Kelas";
+};
 const loading = ref(false);
 
 const selectedDetailBook = ref(null);
@@ -578,6 +616,7 @@ const resetFilters = () => {
   searchQuery.value = "";
   selectedFormat.value = "all";
   selectedCategory.value = "";
+  selectedGrade.value = "";
   fetchBooks();
 };
 
@@ -604,6 +643,11 @@ const filteredBooks = computed(() => {
     if (selectedFormat.value === "pdf" && bookFmt !== "pdf") return false;
     if (selectedFormat.value === "epub" && bookFmt !== "epub") return false;
     if (selectedCategory.value && book.category !== selectedCategory.value)
+      return false;
+    if (
+      selectedGrade.value &&
+      (book.grade_level || "umum") !== selectedGrade.value
+    )
       return false;
     return true;
   });
