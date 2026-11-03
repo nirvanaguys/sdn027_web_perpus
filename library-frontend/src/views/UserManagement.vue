@@ -78,8 +78,9 @@
           <Search class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
             v-model="tableSearch"
+            @input="handleSearchInput"
             type="text"
-            placeholder="Cari nama, email, atau NISN/NIP..."
+            placeholder="Cari nama atau email..."
             class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
           />
         </div>
@@ -88,6 +89,7 @@
           <span class="text-slate-400">Filter Status:</span>
           <select
             v-model="statusFilter"
+            @change="fetchUsers(1)"
             class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
           >
             <option value="all">Semua Status</option>
@@ -102,7 +104,6 @@
           <thead class="bg-slate-50/80 text-slate-500 uppercase text-[11px] tracking-wider font-semibold">
             <tr>
               <th class="px-6 py-4">Nama & Email</th>
-              <th class="px-6 py-4">NISN / NIP</th>
               <th class="px-6 py-4">Peran</th>
               <th class="px-6 py-4 text-center">Status</th>
               <th class="px-6 py-4">Terdaftar</th>
@@ -130,9 +131,6 @@
                     <div class="text-xs text-slate-500 truncate">{{ user.email }}</div>
                   </div>
                 </div>
-              </td>
-              <td class="px-6 py-4 font-mono text-xs text-slate-500">
-                {{ user.identity_number || "-" }}
               </td>
               <td class="px-6 py-4">
                 <span
@@ -223,21 +221,23 @@
     <!-- Modal Edit -->
     <transition enter-active-class="ease-out duration-200" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="ease-in duration-150" leave-from-class="opacity-100" leave-to-class="opacity-0">
       <div v-if="editOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" @click.self="editOpen = false">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-7 border border-slate-100">
-          <h3 class="text-xl font-bold text-slate-900">Ubah Data Akun</h3>
+        <div
+          ref="editModalEl"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-edit-title"
+          class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-7 border border-slate-100"
+        >
+          <h3 id="modal-edit-title" class="text-xl font-bold text-slate-900">Ubah Data Akun</h3>
           <p class="text-xs text-slate-400 mt-0.5 mb-5">Perubahan tersimpan langsung ke akun anggota.</p>
           <form @submit.prevent="saveEdit" class="space-y-4">
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Lengkap</label>
-              <input v-model="editForm.name" required type="text" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
+              <input ref="editFirstInput" v-model="editForm.name" required type="text" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Email</label>
               <input v-model="editForm.email" required type="email" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1.5">NISN / NIP</label>
-              <input v-model="editForm.identity_number" type="text" placeholder="Kosongkan jika belum ada" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1.5">Peran</label>
@@ -257,23 +257,55 @@
       </div>
     </transition>
 
-    <!-- Modal Reset Password -->
+    <!-- Modal Reset Password (UI-09: type password & toggle show/hide) -->
     <transition enter-active-class="ease-out duration-200" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="ease-in duration-150" leave-from-class="opacity-100" leave-to-class="opacity-0">
       <div v-if="resetOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" @click.self="resetOpen = false">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-7 border border-slate-100">
-          <h3 class="text-xl font-bold text-slate-900">Reset Kata Sandi</h3>
+        <div
+          ref="resetModalEl"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-reset-title"
+          class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-7 border border-slate-100"
+        >
+          <h3 id="modal-reset-title" class="text-xl font-bold text-slate-900">Reset Kata Sandi</h3>
           <p class="text-xs text-slate-400 mt-0.5 mb-5">
             Akun: <strong class="text-slate-700">{{ resetTarget?.name }}</strong>
             ({{ resetTarget?.email }}). Sampaikan sandi baru ini ke pemilik akun.
           </p>
           <form @submit.prevent="saveReset" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1.5">Kata Sandi Baru (min. 8 karakter)</label>
-              <input v-model="resetForm.password" required minlength="8" type="text" placeholder="Contoh: sdn027baru" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="block text-xs font-semibold text-slate-700">Kata Sandi Baru (min. 8 karakter & kombinasi angka)</label>
+                <button
+                  type="button"
+                  @click="showResetPass = !showResetPass"
+                  class="text-[11px] font-semibold text-[#1c6d00] hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <EyeOff v-if="showResetPass" class="w-3.5 h-3.5" />
+                  <Eye v-else class="w-3.5 h-3.5" />
+                  <span>{{ showResetPass ? 'Sembunyikan' : 'Tampilkan' }}</span>
+                </button>
+              </div>
+              <input
+                ref="resetFirstInput"
+                v-model="resetForm.password"
+                required
+                minlength="8"
+                :type="showResetPass ? 'text' : 'password'"
+                placeholder="Contoh: sdn027Baru123"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
+              />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1.5">Konfirmasi Kata Sandi Baru</label>
-              <input v-model="resetForm.password_confirmation" required minlength="8" type="text" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
+              <input
+                v-model="resetForm.password_confirmation"
+                required
+                minlength="8"
+                :type="showResetPass ? 'text' : 'password'"
+                placeholder="Ulangi kata sandi baru"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
+              />
             </div>
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
               <button type="button" @click="resetOpen = false" class="px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition cursor-pointer">Batal</button>
@@ -304,11 +336,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
 import api from "../services/api";
 import { authStore } from "../stores/auth";
 import { toastStore } from "../stores/toast";
 import ConfirmModal from "../components/ConfirmModal.vue";
+import { useFocusTrap } from "../composables/useFocusTrap";
 import {
   ShieldCheck,
   Users,
@@ -317,6 +350,8 @@ import {
   KeyRound,
   Ban,
   CheckCircle,
+  Eye,
+  EyeOff,
 } from "lucide-vue-next";
 
 const users = ref([]);
@@ -325,20 +360,38 @@ const statusFilter = ref("all");
 const pagination = ref({ current_page: 1, last_page: 1, total: 0 });
 
 const editOpen = ref(false);
+const editModalEl = ref(null);
+const resetModalEl = ref(null);
+// UI-04: fokus terkunci di modal selama terbuka.
+useFocusTrap(editModalEl, editOpen);
 const editTarget = ref(null);
-const editForm = ref({ name: "", email: "", identity_number: "", role: "member" });
+const editForm = ref({ name: "", email: "", role: "member" });
+const editFirstInput = ref(null);
 
 const resetOpen = ref(false);
+useFocusTrap(resetModalEl, resetOpen);
 const resetTarget = ref(null);
 const resetForm = ref({ password: "", password_confirmation: "" });
+const resetFirstInput = ref(null);
+const showResetPass = ref(false);
 
 const toggleOpen = ref(false);
 const toggleTarget = ref(null);
 const saving = ref(false);
 
+let searchTimer = null;
+
 const fetchUsers = async (page = 1) => {
   try {
-    const res = await api.get("/admin/users", { params: { per_page: 15, page } });
+    const params = { per_page: 15, page };
+    if (tableSearch.value.trim()) {
+      params.search = tableSearch.value.trim();
+    }
+    if (statusFilter.value !== "all") {
+      params.status = statusFilter.value;
+    }
+
+    const res = await api.get("/admin/users", { params });
     const payload = res.data.data;
     users.value = payload.data || [];
     pagination.value = {
@@ -352,25 +405,19 @@ const fetchUsers = async (page = 1) => {
   }
 };
 
+const handleSearchInput = () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    fetchUsers(1);
+  }, 350);
+};
+
 const activeCount = computed(() => users.value.filter((u) => u.is_active).length);
 const inactiveCount = computed(() => users.value.filter((u) => !u.is_active).length);
 const adminCount = computed(() => users.value.filter((u) => u.role === "admin").length);
 
-const filteredUsers = computed(() => {
-  return users.value.filter((u) => {
-    if (tableSearch.value) {
-      const q = tableSearch.value.toLowerCase();
-      const match =
-        u.name?.toLowerCase().includes(q) ||
-        u.email?.toLowerCase().includes(q) ||
-        u.identity_number?.toLowerCase().includes(q);
-      if (!match) return false;
-    }
-    if (statusFilter.value === "aktif" && !u.is_active) return false;
-    if (statusFilter.value === "nonaktif" && u.is_active) return false;
-    return true;
-  });
-});
+// Server-side filtering diutamakan (RD-06)
+const filteredUsers = computed(() => users.value);
 
 const userInitials = (name) => {
   return (name || "U").split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
@@ -387,8 +434,11 @@ const formatDate = (iso) => {
 
 const openEdit = (user) => {
   editTarget.value = user;
-  editForm.value = { name: user.name, email: user.email, identity_number: user.identity_number || "", role: user.role };
+  editForm.value = { name: user.name, email: user.email, role: user.role };
   editOpen.value = true;
+  nextTick(() => {
+    editFirstInput.value?.focus();
+  });
 };
 
 const saveEdit = async () => {
@@ -398,7 +448,6 @@ const saveEdit = async () => {
     await api.put(`/admin/users/${editTarget.value.id}`, {
       name: editForm.value.name,
       email: editForm.value.email,
-      identity_number: editForm.value.identity_number || null,
       role: editForm.value.role,
     });
     toastStore.success("Data akun berhasil diperbarui!");
@@ -415,7 +464,11 @@ const saveEdit = async () => {
 const openReset = (user) => {
   resetTarget.value = user;
   resetForm.value = { password: "", password_confirmation: "" };
+  showResetPass.value = false;
   resetOpen.value = true;
+  nextTick(() => {
+    resetFirstInput.value?.focus();
+  });
 };
 
 const saveReset = async () => {
@@ -427,7 +480,7 @@ const saveReset = async () => {
   saving.value = true;
   try {
     await api.post(`/admin/users/${resetTarget.value.id}/reset-password`, resetForm.value);
-    toastStore.success(`Kata sandi ${resetTarget.value.name} berhasil direset!`);
+    toastStore.success(`Kata sandi akun ${resetTarget.value.name} berhasil direset!`);
     resetOpen.value = false;
   } catch (err) {
     const msg = err.response?.data?.message || "Gagal mereset kata sandi.";
@@ -460,7 +513,20 @@ const executeToggle = async () => {
   }
 };
 
+const onKeydown = (e) => {
+  if (e.key === "Escape") {
+    if (editOpen.value) editOpen.value = false;
+    if (resetOpen.value) resetOpen.value = false;
+  }
+};
+
 onMounted(() => {
   fetchUsers();
+  window.addEventListener("keydown", onKeydown);
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(searchTimer);
+  window.removeEventListener("keydown", onKeydown);
 });
 </script>

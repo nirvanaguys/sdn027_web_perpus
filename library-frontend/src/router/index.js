@@ -3,11 +3,11 @@ import { authStore } from "../stores/auth";
 import { toastStore } from "../stores/toast";
 import BookCatalog from "../views/BookCatalog.vue";
 import Login from "../views/Login.vue";
+import ResetPassword from "../views/ResetPassword.vue";
 import AdminDashboard from "../views/AdminDashboard.vue";
 import EbookReader from "../views/EbookReader.vue";
 import ReadingLibrary from "../views/ReadingLibrary.vue";
 import UserManagement from "../views/UserManagement.vue";
-import ForgotPassword from "../views/ForgotPassword.vue";
 
 const routes = [
   {
@@ -35,15 +35,15 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/reset-password",
+    name: "ResetPassword",
+    component: ResetPassword,
+    alias: "/forgot-password",
+  },
+  {
     path: "/login",
     name: "Login",
     component: Login,
-    meta: { guestOnly: true },
-  },
-  {
-    path: "/forgot-password",
-    name: "ForgotPassword",
-    component: ForgotPassword,
     meta: { guestOnly: true },
   },
   {
@@ -57,11 +57,6 @@ const routes = [
     name: "UserManagement",
     component: UserManagement,
     meta: { requiresAuth: true, role: "admin" },
-  },
-  {
-    // Redirect rute transaksi lama ke katalog utama
-    path: "/my-loans",
-    redirect: "/",
   },
   {
     path: "/:pathMatch(.*)*",

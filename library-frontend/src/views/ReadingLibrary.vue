@@ -47,7 +47,7 @@
       </div>
       <div class="mt-5 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
         <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-slate-200">
-          <BookOpen class="h-3.5 w-3.5 text-[#1c6d00]" /> {{ items.length }} ebook tersimpan
+          <BookOpen class="h-3.5 w-3.5 text-[#1c6d00]" /> {{ items.length }} {{ isHistory ? 'riwayat bacaan' : 'ebook tersimpan' }}
         </span>
         <router-link
           to="/"
@@ -146,7 +146,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, onBeforeUnmount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { ArrowRight, BookOpen, BookmarkX, Library } from "lucide-vue-next";
 import api, { assetUrl } from "../services/api";
@@ -174,6 +174,8 @@ const removeBook = async (bookId) => {
   try {
     await api.delete(`/reading-list/${bookId}`);
     items.value = items.value.filter((entry) => entry.book_id !== bookId);
+    // UI-10: Beritahu tab lain via localStorage
+    localStorage.setItem("reading-list-updated", Date.now().toString());
     toastStore.success("Ebook dihapus dari Reading List.");
   } catch (error) {
     toastStore.error("Gagal menghapus ebook dari Reading List.");
@@ -187,6 +189,28 @@ const formatDate = (value) =>
       )
     : "-";
 
-onMounted(fetchItems);
+const handleStorage = (e) => {
+  if (e.key === "reading-list-updated") {
+    fetchItems();
+  }
+};
+
+const handleVisibility = () => {
+  if (document.visibilityState === "visible") {
+    fetchItems();
+  }
+};
+
+onMounted(() => {
+  fetchItems();
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener("visibilitychange", handleVisibility);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("storage", handleStorage);
+  window.removeEventListener("visibilitychange", handleVisibility);
+});
+
 watch(() => route.path, fetchItems);
 </script>

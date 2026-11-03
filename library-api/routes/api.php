@@ -13,13 +13,12 @@ use App\Http\Controllers\Api\UserController;
 |--------------------------------------------------------------------------
 | Pengunjung dapat mendaftar, login, dan melihat katalog serta metadata ebook.
 */
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 
-// Lupa kata sandi mandiri (tanpa email/SMTP): verifikasi identitas
-// email + NISN/NIP -> tiket reset 10 menit -> ganti sandi baru.
-Route::post('/forgot-password/verify', [AuthController::class, 'forgotPasswordVerify']);
-Route::post('/forgot-password/reset', [AuthController::class, 'forgotPasswordReset']);
+// Lupa kata sandi via tautan email (butuh MAIL_* SMTP di .env)
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
 
 // Katalog ebook publik (hanya metadata)
 Route::get('/books', [BookController::class, 'index']);
@@ -30,7 +29,7 @@ Route::get('/books/{id}', [BookController::class, 'show']);
 | Protected Routes (Authenticated via Sanctum)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'ensure_active'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', function (Request $request) {
         return response()->json([

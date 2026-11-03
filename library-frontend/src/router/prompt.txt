@@ -12,7 +12,7 @@ Ask the user focused questions to understand the user's goals. Do they want:
 - existing components refactored to the new system, or
 - new pages/features built entirely in the new style?
 
-Once you understand the context and scope, do the following:
+Once you understand the context and scope, do the following:        
 - Propose a concise implementation plan that follows best practices, prioritizing:
   - centralizing design tokens,
   - reusability and composability of components,

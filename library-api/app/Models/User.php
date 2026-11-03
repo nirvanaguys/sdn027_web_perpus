@@ -15,10 +15,14 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $attributes = [
+        'is_active' => true,
+        'role' => 'member',
+    ];
+
     protected $fillable = [
         'name',
         'email',
-        'identity_number',
         'password',
         'role',
         'is_active',
@@ -41,11 +45,6 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
-    }
-
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(Transaction::class);
     }
 
     public function readingHistories(): HasMany

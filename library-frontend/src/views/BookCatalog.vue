@@ -14,22 +14,12 @@
 
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <div class="max-w-3xl space-y-4 sm:space-y-5">
-          <!-- Badge -->
-          <div
-            class="anim-fade-up inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/12 px-3.5 py-1.5 text-xs font-semibold text-emerald-50 backdrop-blur-md"
-          >
-            <span class="h-2 w-2 rounded-full bg-emerald-300 animate-pulse"></span>
-            <span>Perpustakaan Ebook Digital &bull; SDN 027 Balikpapan Utara</span>
-          </div>
-
           <!-- Headline -->
           <h1
             class="anim-fade-up-1 text-3xl sm:text-4xl lg:text-[3.25rem] font-extrabold leading-[1.08] tracking-tight text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.35)]"
           >
             Perpustakaan Digital
-            <span class="block bg-gradient-to-r from-[#b7e4a3] via-white to-[#d9f2c7] bg-clip-text text-transparent">
-              SDN 027 Balikpapan Utara
-            </span>
+            <span class="block">SDN 027 Balikpapan Utara</span>
           </h1>
 
           <!-- Subtitle -->
@@ -68,14 +58,14 @@
                 class="mr-1 hidden shrink-0 items-center gap-1.5 rounded-xl bg-[#0e2f14] px-3.5 py-2.5 text-xs font-bold text-white sm:inline-flex"
               >
                 <BookOpen class="w-4 h-4" />
-                {{ filteredBooks.length }} Ebook
+                {{ pagination.total }} Ebook
               </span>
             </div>
             <div class="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-emerald-50/85">
               <span class="uppercase tracking-widest text-emerald-100/70">Populer:</span>
               <button type="button" @click="searchQuery=''; handleSearch()" class="rounded-full border border-white/25 bg-white/10 px-3 py-1 backdrop-blur transition hover:bg-white/20 cursor-pointer">Semua</button>
-              <span class="rounded-full border border-white/25 bg-white/10 px-3 py-1">PDF: {{ pdfCount }}</span>
-              <span class="rounded-full border border-white/25 bg-white/10 px-3 py-1">EPUB: {{ epubCount }}</span>
+              <span class="rounded-full border border-white/25 bg-white/10 px-3 py-1">PDF: {{ counts.pdf }}</span>
+              <span class="rounded-full border border-white/25 bg-white/10 px-3 py-1">EPUB: {{ counts.epub }}</span>
             </div>
           </div>
         </div>
@@ -86,7 +76,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 grid grid-cols-3 gap-3 text-center sm:text-left">
           <div class="flex items-center justify-center gap-2.5 sm:justify-start">
             <Library class="h-4 w-4 text-emerald-200" />
-            <p class="text-xs sm:text-sm text-emerald-50"><strong class="font-extrabold text-white">{{ allBooks.length }}</strong> koleksi terdaftar</p>
+            <p class="text-xs sm:text-sm text-emerald-50"><strong class="font-extrabold text-white">{{ pagination.total }}</strong> koleksi terdaftar</p>
           </div>
           <div class="flex items-center justify-center gap-2.5">
             <Zap class="h-4 w-4 text-emerald-200" />
@@ -115,7 +105,7 @@
           <button
             v-for="filter in formatFilterOptions"
             :key="filter.value"
-            @click="selectedFormat = filter.value"
+            @click="setFormat(filter.value)"
             class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition cursor-pointer"
             :class="
               selectedFormat === filter.value
@@ -136,6 +126,7 @@
           <select
             id="kategori"
             v-model="selectedCategory"
+            @change="fetchBooks(1)"
             class="w-full lg:w-auto px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700 font-medium focus:ring-2 focus:ring-[#248900]/40 outline-none cursor-pointer"
           >
             <option value="">Semua Kategori</option>
@@ -147,6 +138,7 @@
           <select
             id="kelas"
             v-model="selectedGrade"
+            @change="fetchBooks(1)"
             class="w-full lg:w-auto px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700 font-medium focus:ring-2 focus:ring-[#248900]/40 outline-none cursor-pointer"
           >
             <option value="">Semua Kelas</option>
@@ -155,7 +147,7 @@
             </option>
           </select>
           <p class="hidden xl:block text-xs text-slate-400 whitespace-nowrap">
-            Menampilkan <strong class="text-slate-700">{{ filteredBooks.length }}</strong> dari {{ allBooks.length }} ebook
+            Menampilkan <strong class="text-slate-700">{{ pagination.total }}</strong> Ebook
           </p>
         </div>
       </div>
@@ -254,8 +246,9 @@
             <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 to-transparent"></div>
 
             <div class="absolute inset-x-0 top-0 flex items-start justify-between p-3">
-              <!-- Format Badge (PDF / EPUB) -->
+              <!-- Format Badge (PDF / EPUB / Katalog) -->
               <span
+                v-if="book.has_ebook && book.file_format"
                 class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider shadow backdrop-blur-md"
                 :class="
                   (book.file_format || '').toLowerCase() === 'pdf'
@@ -264,15 +257,30 @@
                 "
               >
                 <FileText class="w-3.5 h-3.5" />
-                <span>{{ (book.file_format || "PDF").toUpperCase() }}</span>
+                <span>{{ (book.file_format || '').toUpperCase() }}</span>
+              </span>
+              <span
+                v-else
+                class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider shadow backdrop-blur-md bg-slate-800/80 text-slate-200 ring-1 ring-white/20"
+              >
+                <Library class="w-3.5 h-3.5" />
+                <span>Katalog</span>
               </span>
 
-              <!-- Digital Read Ready Badge -->
+              <!-- Digital Read Ready Badge (UI-03) -->
               <span
+                v-if="book.has_ebook"
                 class="inline-flex items-center gap-1 rounded-full bg-emerald-500/90 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur-md"
               >
                 <CheckCircle2 class="w-3 h-3" />
                 <span>Siap Baca</span>
+              </span>
+              <span
+                v-else
+                class="inline-flex items-center gap-1 rounded-full bg-amber-600/90 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur-md"
+              >
+                <AlertCircle class="w-3 h-3" />
+                <span>Belum Tersedia</span>
               </span>
             </div>
 
@@ -341,7 +349,7 @@
               </button>
 
               <button
-                v-if="authStore.isAuthenticated()"
+                v-if="authStore.isAuthenticated() && book.has_ebook"
                 type="button"
                 @click="toggleReadingList(book)"
                 :aria-label="
@@ -363,15 +371,51 @@
                 />
               </button>
               <button
+                v-if="book.has_ebook"
                 @click="handleReadBook(book)"
                 class="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#248900] to-[#14532d] px-3 py-2.5 text-xs font-semibold text-white shadow-[0_12px_25px_-12px_rgba(36,137,0,0.7)] transition hover:brightness-[1.07] cursor-pointer"
               >
                 <BookOpen class="w-3.5 h-3.5" />
                 <span>Baca Ebook</span>
               </button>
+              <button
+                v-else
+                disabled
+                title="Berkas digital belum diunggah untuk buku ini"
+                class="flex items-center justify-center gap-1.5 rounded-xl bg-slate-100 px-3 py-2.5 text-xs font-semibold text-slate-400 cursor-not-allowed border border-slate-200"
+                :class="authStore.isAuthenticated() ? 'col-span-2' : ''"
+              >
+                <AlertCircle class="w-3.5 h-3.5" />
+                <span>Berkas Belum Ada</span>
+              </button>
             </div>
           </div>
         </article>
+      </div>
+
+      <!-- UI-01: Pagination Navigasi Katalog Ebook -->
+      <div v-if="pagination.last_page > 1" class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm border border-slate-200/80">
+        <p class="text-xs sm:text-sm text-slate-500">
+          Menampilkan halaman <strong class="text-slate-800">{{ pagination.current_page }}</strong> dari <strong class="text-slate-800">{{ pagination.last_page }}</strong> (total {{ pagination.total }} ebook)
+        </p>
+        <div class="flex items-center gap-2">
+          <button
+            @click="fetchBooks(pagination.current_page - 1)"
+            :disabled="pagination.current_page <= 1"
+            class="px-4 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5"
+          >
+            <ChevronLeft class="w-4 h-4" />
+            <span>Sebelumnya</span>
+          </button>
+          <button
+            @click="fetchBooks(pagination.current_page + 1)"
+            :disabled="pagination.current_page >= pagination.last_page"
+            class="px-4 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Berikutnya</span>
+            <ChevronRight class="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </main>
 
@@ -390,6 +434,9 @@
         @click.self="selectedDetailBook = null"
       >
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="detail-book-title"
           class="max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl max-w-lg w-full border border-slate-100"
         >
           <div
@@ -406,22 +453,26 @@
             <div class="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl" aria-hidden="true"></div>
             <button
               @click="selectedDetailBook = null"
+              aria-label="Tutup detail buku"
               class="absolute top-4 right-4 p-1.5 rounded-full bg-black/20 hover:bg-black/30 text-white transition cursor-pointer"
             >
               <X class="w-5 h-5" />
             </button>
             <span
+              v-if="selectedDetailBook.has_ebook && selectedDetailBook.file_format"
               class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-black/30 mb-3"
             >
               <FileText class="w-3.5 h-3.5" />
-              <span
-                >Format:
-                {{
-                  (selectedDetailBook.file_format || "PDF").toUpperCase()
-                }}</span
-              >
+              <span>Format: {{ selectedDetailBook.file_format.toUpperCase() }}</span>
             </span>
-            <h2 class="text-xl font-bold leading-snug">
+            <span
+              v-else
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-black/30 mb-3"
+            >
+              <Library class="w-3.5 h-3.5" />
+              <span>Format: Belum Ada Berkas</span>
+            </span>
+            <h2 id="detail-book-title" class="text-xl font-bold leading-snug">
               {{ selectedDetailBook.title }}
             </h2>
             <p class="text-sm text-white/80 mt-1">
@@ -498,12 +549,21 @@
                 Tutup
               </button>
               <button
+                v-if="selectedDetailBook.has_ebook"
                 type="button"
                 @click="handleReadBook(selectedDetailBook)"
                 class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#248900] to-[#14532d] hover:brightness-[1.07] transition flex items-center gap-2 cursor-pointer shadow-md shadow-[#248900]/25"
               >
                 <BookOpen class="w-4 h-4" />
                 <span>Baca Ebook Sekarang</span>
+              </button>
+              <button
+                v-else
+                disabled
+                class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-400 bg-slate-100 border border-slate-200 cursor-not-allowed flex items-center gap-2"
+              >
+                <AlertCircle class="w-4 h-4" />
+                <span>Berkas Ebook Belum Tersedia</span>
               </button>
             </div>
           </div>
@@ -532,32 +592,32 @@ import {
   ShieldCheck,
   FileText,
   CheckCircle2,
+  AlertCircle,
   Zap,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-vue-next";
 import schoolImg from "../assets/library-frontend/sd027.jpg";
+import {
+  useCatalog,
+  GRADES as gradeLevels,
+  gradeLabel,
+} from "../composables/useCatalog";
 
 const router = useRouter();
-const allBooks = ref([]);
+// Halaman buku, ringkasan katalog dan daftar kategori disediakan module katalog.
+const {
+  books: allBooks,
+  pagination,
+  counts,
+  categories: uniqueCategories,
+  loading,
+  load,
+} = useCatalog(12);
 const searchQuery = ref("");
 const selectedFormat = ref("all");
 const selectedCategory = ref("");
 const selectedGrade = ref("");
-
-const gradeLevels = [
-  { value: "umum", label: "Umum / Semua Kelas" },
-  { value: "kelas-1", label: "Kelas 1" },
-  { value: "kelas-2", label: "Kelas 2" },
-  { value: "kelas-3", label: "Kelas 3" },
-  { value: "kelas-4", label: "Kelas 4" },
-  { value: "kelas-5", label: "Kelas 5" },
-  { value: "kelas-6", label: "Kelas 6" },
-];
-
-const gradeLabel = (value) => {
-  const found = gradeLevels.find((g) => g.value === (value || "umum"));
-  return found ? found.label : "Umum / Semua Kelas";
-};
-const loading = ref(false);
 
 const selectedDetailBook = ref(null);
 const savedBookIds = ref(new Set());
@@ -585,31 +645,33 @@ const getCardGradient = (id) => {
   return coverColors[(id || 0) % coverColors.length];
 };
 
-const fetchBooks = async () => {
-  loading.value = true;
-  try {
-    const res = await api.get("/books", {
-      params: { search: searchQuery.value },
-    });
-    allBooks.value = res.data.data.data || [];
-  } catch (error) {
-    console.error("Error fetching books:", error);
-    toastStore.error("Gagal memuat katalog ebook.");
-  } finally {
-    loading.value = false;
-  }
+const fetchBooks = async (page = 1) => {
+  await load(
+    {
+      search: searchQuery.value.trim(),
+      format: selectedFormat.value !== "all" ? selectedFormat.value : "",
+      category: selectedCategory.value,
+      grade_level: selectedGrade.value,
+    },
+    page,
+  );
 };
 
 const handleSearch = () => {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
-    fetchBooks();
+    fetchBooks(1);
   }, 350);
 };
 
 const clearSearch = () => {
   searchQuery.value = "";
-  fetchBooks();
+  fetchBooks(1);
+};
+
+const setFormat = (fmt) => {
+  selectedFormat.value = fmt;
+  fetchBooks(1);
 };
 
 const resetFilters = () => {
@@ -617,41 +679,11 @@ const resetFilters = () => {
   selectedFormat.value = "all";
   selectedCategory.value = "";
   selectedGrade.value = "";
-  fetchBooks();
+  fetchBooks(1);
 };
 
-const uniqueCategories = computed(() => {
-  const cats = allBooks.value.map((b) => b.category).filter(Boolean);
-  return [...new Set(cats)].sort();
-});
-
-const pdfCount = computed(
-  () =>
-    allBooks.value.filter((b) => (b.file_format || "").toLowerCase() === "pdf")
-      .length,
-);
-
-const epubCount = computed(
-  () =>
-    allBooks.value.filter((b) => (b.file_format || "").toLowerCase() === "epub")
-      .length,
-);
-
-const filteredBooks = computed(() => {
-  return allBooks.value.filter((book) => {
-    const bookFmt = (book.file_format || "").toLowerCase();
-    if (selectedFormat.value === "pdf" && bookFmt !== "pdf") return false;
-    if (selectedFormat.value === "epub" && bookFmt !== "epub") return false;
-    if (selectedCategory.value && book.category !== selectedCategory.value)
-      return false;
-    if (
-      selectedGrade.value &&
-      (book.grade_level || "umum") !== selectedGrade.value
-    )
-      return false;
-    return true;
-  });
-});
+// Server-side filtering diutamakan (UI-02)
+const filteredBooks = computed(() => allBooks.value);
 
 const openDetail = (book) => {
   selectedDetailBook.value = book;
@@ -665,6 +697,11 @@ const onCoverError = (book) => {
 
 // Handle Click "Baca Ebook"
 const handleReadBook = (book) => {
+  if (!book.has_ebook) {
+    toastStore.warning("Berkas ebook belum tersedia untuk buku ini.");
+    return;
+  }
+
   selectedDetailBook.value = null;
 
   if (!authStore.isAuthenticated()) {
@@ -693,6 +730,11 @@ const fetchReadingList = async () => {
 };
 
 const toggleReadingList = async (book) => {
+  if (!book.has_ebook) {
+    toastStore.warning("Buku tanpa berkas ebook tidak dapat disimpan ke Reading List.");
+    return;
+  }
+
   const isSaved = savedBookIds.value.has(book.id);
   try {
     if (isSaved) {
@@ -705,15 +747,44 @@ const toggleReadingList = async (book) => {
     const next = new Set(savedBookIds.value);
     isSaved ? next.delete(book.id) : next.add(book.id);
     savedBookIds.value = next;
+
+    // UI-10: Beritahu tab lain via localStorage
+    localStorage.setItem("reading-list-updated", Date.now().toString());
   } catch (error) {
     toastStore.error("Gagal memperbarui Reading List.");
+  }
+};
+
+const handleStorage = (e) => {
+  if (e.key === "reading-list-updated") {
+    fetchReadingList();
+  }
+};
+
+const handleVisibility = () => {
+  if (document.visibilityState === "visible") {
+    fetchReadingList();
+  }
+};
+
+const onKeydown = (e) => {
+  if (e.key === "Escape" && selectedDetailBook.value) {
+    selectedDetailBook.value = null;
   }
 };
 
 onMounted(() => {
   fetchBooks();
   fetchReadingList();
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener("visibilitychange", handleVisibility);
+  window.addEventListener("keydown", onKeydown);
 });
 
-onBeforeUnmount(() => clearTimeout(debounceTimer));
+onBeforeUnmount(() => {
+  clearTimeout(debounceTimer);
+  window.removeEventListener("storage", handleStorage);
+  window.removeEventListener("visibilitychange", handleVisibility);
+  window.removeEventListener("keydown", onKeydown);
+});
 </script>

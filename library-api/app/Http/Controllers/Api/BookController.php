@@ -16,6 +16,11 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
+        // RD-04: Validasi panjang search agar string raksasa tidak memutus koneksi
+        $request->validate([
+            'search' => 'nullable|string|max:100',
+        ]);
+
         $query = Book::query();
 
         // Pencarian judul, penulis, penerbit, isbn, atau deskripsi
@@ -40,17 +45,42 @@ class BookController extends Controller
             $query->where('grade_level', strtolower($request->query('grade_level')));
         }
 
+        // Ringkasan katalog dihitung server atas SELURUH hasil pencarian/filter
+        // (bukan hanya halaman yang sedang tampil) dan sengaja mengabaikan
+        // filter format, agar badge PDF/EPUB tetap bermakna saat difilter.
+        $summary = (clone $query)->selectRaw(
+            "count(*) as total,
+             coalesce(sum(case when lower(file_format) = 'pdf' then 1 else 0 end), 0) as pdf,
+             coalesce(sum(case when lower(file_format) = 'epub' then 1 else 0 end), 0) as epub,
+             coalesce(sum(case when file_path is not null then 1 else 0 end), 0) as ready"
+        )->first();
+
         // Filter format file (pdf, epub)
         if ($request->filled('format')) {
             $query->where('file_format', strtolower($request->query('format')));
         }
 
-        $perPage = $request->query('per_page', 12);
+        // SD-02 & TG-02: Batasi batas bawah dan batas atas per_page
+        $perPage = (int) $request->query('per_page', 12);
+        $perPage = max(1, min($perPage, 100));
         $books = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
         return response()->json([
             'success' => true,
             'data'    => $books,
+            'meta'    => [
+                'counts' => [
+                    'total' => (int) $summary->total,
+                    'pdf'   => (int) $summary->pdf,
+                    'epub'  => (int) $summary->epub,
+                    'ready' => (int) $summary->ready,
+                ],
+                // Kategori diambil dari seluruh katalog agar filter aktif
+                // tidak menyembunyikan pilihan kategori lain.
+                'categories' => Book::query()
+                    ->whereNotNull('category')->where('category', '!=', '')
+                    ->distinct()->orderBy('category')->pluck('category'),
+            ],
         ]);
     }
 
@@ -127,7 +157,12 @@ class BookController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $ext = strtolower($file->getClientOriginalExtension());
+            $mime = $file->getMimeType();
+            $ext = match ($mime) {
+                'application/pdf' => 'pdf',
+                'application/epub+zip' => 'epub',
+                default => strtolower($file->getClientOriginalExtension()),
+            };
             $path = $file->store('ebooks', 'local');
 
             $validated['file_path'] = $path;
@@ -193,7 +228,12 @@ class BookController extends Controller
             }
 
             $file = $request->file('file');
-            $ext = strtolower($file->getClientOriginalExtension());
+            $mime = $file->getMimeType();
+            $ext = match ($mime) {
+                'application/pdf' => 'pdf',
+                'application/epub+zip' => 'epub',
+                default => strtolower($file->getClientOriginalExtension()),
+            };
             $path = $file->store('ebooks', 'local');
 
             $validated['file_path'] = $path;

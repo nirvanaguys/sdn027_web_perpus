@@ -11,8 +11,8 @@ echo "  Memulai Sistem Manajemen Perpustakaan"
 echo "=========================================="
 
 # 1. Jalankan Backend (Laravel API)
-echo "[1/2] Menjalankan Backend Laravel API (http://localhost:8000)..."
-(cd "$ROOT_DIR/library-api/public" && exec php -d upload_max_filesize=50M -d post_max_size=60M -S 0.0.0.0:8000 "$API_ROUTER") &
+echo "[1/2] Menjalankan Backend Laravel API (http://localhost:8001)..."
+(cd "$ROOT_DIR/library-api/public" && exec php -d expose_php=Off -d upload_max_filesize=50M -d post_max_size=60M -S 0.0.0.0:8001 "$API_ROUTER") &
 
 # 2. Jalankan Frontend (Vue.js Vite)
 echo "[2/2] Menjalankan Frontend Vue (http://localhost:5173)..."

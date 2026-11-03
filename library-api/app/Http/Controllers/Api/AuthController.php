@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password as PasswordBroker;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -15,14 +17,12 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name'            => 'required|string|max:255',
             'email'           => 'required|string|email|max:255|unique:users',
-            'identity_number' => 'required|string|max:30|unique:users,identity_number',
-            'password'        => 'required|string|min:8|confirmed',
+            'password'        => ['required', 'string', 'confirmed', Password::min(8)->letters()->numbers()],
         ]);
 
         $user = User::create([
             'name'            => $validated['name'],
             'email'           => $validated['email'],
-            'identity_number' => $validated['identity_number'],
             'password'        => Hash::make($validated['password']),
             'role'            => 'member',
         ]);
@@ -33,7 +33,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Registrasi berhasil',
             'data'    => [
-                'user'  => $user,
+                'user'  => $user->fresh(),
                 'token' => $token,
             ]
         ], 201);
@@ -85,83 +85,51 @@ class AuthController extends Controller
     }
 
     /**
-     * Langkah 1 lupa kata sandi (mandiri, tanpa email/SMTP, 24 jam):
-     * user membuktikan kepemilikan akun dengan email + NISN/NIP.
-     * Berhasil -> server menerbitkan tiket reset berumur 10 menit.
-     *
-     * Pesan gagal dibuat generik agar tidak membocorkan akun mana
-     * yang terdaftar (hindari enumerasi akun oleh pihak iseng).
+     * Lupa kata sandi langkah 1: kirim tautan reset ke email.
+     * Balasan selalu sama (terdaftar atau tidak) agar tidak bisa dipakai
+     * menebak email mana yang punya akun.
      */
-    public function forgotPasswordVerify(Request $request)
+    public function forgotPassword(Request $request)
     {
-        $request->validate([
-            'email'           => 'required|email',
-            'identity_number' => 'required|string|max:30',
-        ]);
+        $request->validate(['email' => 'required|email']);
 
-        $user = User::where('email', $request->email)
-            ->where('identity_number', $request->identity_number)
-            ->first();
+        $user = User::where('email', $request->email)->first();
 
-        if (!$user || !$user->is_active) {
-            throw ValidationException::withMessages([
-                'email' => ['Data tidak cocok. Periksa kembali email dan NISN/NIP Anda, atau hubungi pustakawan.'],
-            ]);
+        if ($user && $user->is_active) {
+            PasswordBroker::sendResetLink(['email' => $user->email]);
         }
-
-        $ticket = $user->createToken(
-            'password_reset',
-            ['password-reset'],
-            now()->addMinutes(10)
-        )->plainTextToken;
 
         return response()->json([
             'success' => true,
-            'message' => 'Identitas terverifikasi. Silakan buat kata sandi baru.',
-            'data'    => [
-                'reset_ticket' => $ticket,
-            ],
+            'message' => 'Kalau email itu terdaftar, tautan reset sudah dikirim. Periksa kotak masuk atau folder spam (berlaku 60 menit).',
         ]);
     }
 
     /**
-     * Langkah 2 lupa kata sandi: tukar tiket reset (10 menit) dengan
-     * kata sandi baru. Tiket langsung dihapus agar tidak dipakai ulang.
+     * Lupa kata sandi langkah 2: tukar token dari email dengan sandi baru.
+     * Token sekali pakai dan otomatis kedaluwarsa.
      */
-    public function forgotPasswordReset(Request $request)
+    public function resetPassword(Request $request)
     {
         $validated = $request->validate([
-            'reset_ticket' => 'required|string',
-            'password'     => 'required|string|min:8|confirmed',
+            'token'    => 'required|string',
+            'email'    => 'required|email',
+            'password' => ['required', 'string', 'confirmed', Password::min(8)->letters()->numbers()],
         ]);
 
-        $token = \Laravel\Sanctum\PersonalAccessToken::findToken($validated['reset_ticket']);
+        $status = PasswordBroker::reset($validated, function (User $user, string $password) {
+            $user->forceFill(['password' => Hash::make($password)])->save();
 
-        if (!$token || !$token->can('password-reset') || $token->expires_at?->isPast()) {
-            $token?->delete();
+            // TG-05: cabut seluruh token sesi lama setelah sandi diganti
+            $user->tokens()->delete();
+        });
 
+        if ($status !== PasswordBroker::PASSWORD_RESET) {
             return response()->json([
                 'success' => false,
-                'message' => 'Tiket reset kedaluwarsa. Silakan ulangi verifikasi identitas.',
+                'message' => 'Tautan reset tidak valid atau sudah kedaluwarsa. Silakan minta tautan baru.',
             ], 422);
         }
-
-        $user = $token->tokenable;
-
-        if (!$user || !$user->is_active) {
-            $token->delete();
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Akun tidak dapat direset. Silakan hubungi pustakawan.',
-            ], 422);
-        }
-
-        $user->password = Hash::make($validated['password']);
-        $user->save();
-
-        // Tiket sekali pakai: hapus segera setelah berhasil.
-        $token->delete();
 
         return response()->json([
             'success' => true,

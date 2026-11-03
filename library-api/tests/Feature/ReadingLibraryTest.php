@@ -33,7 +33,7 @@ class ReadingLibraryTest extends TestCase
             ->getJson('/api/reading-list')
             ->assertJsonCount(0, 'data');
 
-        $this->deleteJson("/api/reading-list/{$book->id}")->assertOk();
+        $this->deleteJson("/api/reading-list/{$book->id}")->assertNotFound();
         $this->assertDatabaseMissing('reading_lists', [
             'user_id' => $otherUser->id,
             'book_id' => $book->id,

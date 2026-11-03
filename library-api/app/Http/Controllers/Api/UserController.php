@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 /**
  * Admin Only: Pengelolaan akun anggota.
@@ -20,14 +21,13 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::query()->select(['id', 'name', 'email', 'role', 'is_active', 'created_at']);
 
         if ($request->filled('search')) {
             $search = $request->query('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('identity_number', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -43,7 +43,10 @@ class UserController extends Controller
             }
         }
 
-        $perPage = $request->query('per_page', 15);
+        // SD-02 & TG-02: Batasi batas bawah dan batas atas per_page
+        $perPage = (int) $request->query('per_page', 15);
+        $perPage = max(1, min($perPage, 100));
+
         $users = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
         return response()->json([
@@ -56,10 +59,17 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        // SD-04: Cegah admin menurunkan perannya sendiri agar tidak terkunci dari panel
+        if ($user->id === $request->user()->id && $request->has('role') && $request->role !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak dapat menurunkan peran akun Anda sendiri.',
+            ], 422);
+        }
+
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'identity_number' => ['sometimes', 'nullable', 'string', 'max:30', Rule::unique('users', 'identity_number')->ignore($user->id)],
             'role' => 'sometimes|required|in:admin,member',
         ]);
 
@@ -81,11 +91,14 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', 'confirmed', Password::min(8)->letters()->numbers()],
         ]);
 
         $user->password = Hash::make($validated['password']);
         $user->save();
+
+        // TG-05: Cabut seluruh token login sesi saat password direset oleh admin
+        $user->tokens()->delete();
 
         return response()->json([
             'success' => true,
@@ -112,6 +125,11 @@ class UserController extends Controller
 
         $user->is_active = $validated['is_active'];
         $user->save();
+
+        // TG-03: Cabut semua token sesi jika akun dinonaktifkan
+        if (!$user->is_active) {
+            $user->tokens()->delete();
+        }
 
         return response()->json([
             'success' => true,

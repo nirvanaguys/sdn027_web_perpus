@@ -64,11 +64,6 @@ class Book extends Model
         return $this->cover_image ? '/storage/' . $this->cover_image : null;
     }
 
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(Transaction::class);
-    }
-
     public function readingHistories(): HasMany
     {
         return $this->hasMany(ReadingHistory::class);

@@ -1,5 +1,9 @@
 <template>
-  <div class="fixed inset-x-4 top-[5.5rem] z-50 flex flex-col gap-2.5 pointer-events-none sm:inset-x-auto sm:right-5 sm:top-5 sm:w-full sm:max-w-sm">
+  <div
+    aria-live="polite"
+    role="status"
+    class="fixed inset-x-4 top-[5.5rem] z-50 flex flex-col gap-2.5 pointer-events-none sm:inset-x-auto sm:right-5 sm:top-5 sm:w-full sm:max-w-sm"
+  >
     <transition-group
       enter-active-class="transform ease-out duration-300 transition"
       enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-4"
@@ -11,6 +15,7 @@
       <div
         v-for="toast in toastStore.toasts"
         :key="toast.id"
+        :role="toast.type === 'error' ? 'alert' : 'status'"
         class="pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-xl backdrop-blur-xl border text-sm transition-all"
         :class="toastClasses(toast.type)"
       >
@@ -20,6 +25,7 @@
         </div>
         <button
           @click="toastStore.remove(toast.id)"
+          aria-label="Tutup notifikasi"
           class="shrink-0 p-1 -mr-1 -mt-1 rounded-lg opacity-70 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
         >
           <X class="w-4 h-4" />

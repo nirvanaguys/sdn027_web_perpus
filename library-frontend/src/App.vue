@@ -34,7 +34,7 @@
               <p class="text-base font-extrabold tracking-tight text-white">
                 Perpus<span class="text-[#8bcf78]">Ku</span>
               </p>
-              <p class="text-[11px] font-medium uppercase tracking-widest text-emerald-100/70">
+              <p class="text-[11px] font-medium text-emerald-100/70">
                 SDN 027 Balikpapan Utara
               </p>
             </div>
@@ -43,10 +43,6 @@
             Perpustakaan ebook digital sekolah. Cari koleksi, simpan ke Reading
             List, dan baca langsung dari peramban.
           </p>
-          <div class="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-50">
-            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Layanan perpustakaan aktif
-          </div>
         </div>
 
         <nav aria-label="Navigasi perpustakaan">

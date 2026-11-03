@@ -13,6 +13,10 @@
       @click.self="cancel"
     >
       <div
+        ref="dialogEl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-modal-title"
         class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-7 border border-slate-100 transform transition-all"
       >
         <div class="flex items-start gap-4">
@@ -23,7 +27,7 @@
             <component :is="isDanger ? AlertTriangle : HelpCircle" class="w-6 h-6" />
           </div>
           <div>
-            <h3 class="text-lg font-bold text-slate-900 leading-snug">
+            <h3 id="confirm-modal-title" class="text-lg font-bold text-slate-900 leading-snug">
               {{ title }}
             </h3>
             <p class="mt-2 text-sm text-slate-500 leading-relaxed">
@@ -62,9 +66,11 @@
 </template>
 
 <script setup>
+import { onMounted, onBeforeUnmount, ref, toRef } from 'vue';
 import { AlertTriangle, HelpCircle } from 'lucide-vue-next';
+import { useFocusTrap } from '../composables/useFocusTrap';
 
-defineProps({
+const props = defineProps({
   isOpen: { type: Boolean, default: false },
   title: { type: String, default: 'Konfirmasi Tindakan' },
   message: { type: String, default: 'Apakah Anda yakin ingin melanjutkan?' },
@@ -76,6 +82,24 @@ defineProps({
 
 const emit = defineEmits(['confirm', 'cancel']);
 
+// UI-04: fokus terkunci di dialog selama terbuka.
+const dialogEl = ref(null);
+useFocusTrap(dialogEl, toRef(props, 'isOpen'));
+
 const confirm = () => emit('confirm');
 const cancel = () => emit('cancel');
+
+const onKeydown = (e) => {
+  if (e.key === 'Escape' && props.isOpen && !props.loading) {
+    cancel();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown);
+});
 </script>

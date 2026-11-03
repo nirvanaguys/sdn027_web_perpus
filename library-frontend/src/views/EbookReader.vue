@@ -235,7 +235,7 @@
       <div class="max-w-md mx-auto flex items-center justify-between gap-3">
         <button
           @click="prevPdfPage"
-          :disabled="pdfCurrentPage <= 1"
+          :disabled="pdfCurrentPage <= 1 || isRendering"
           class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition disabled:opacity-40 flex items-center gap-1.5 cursor-pointer"
         >
           <ChevronLeft class="w-4 h-4" />
@@ -258,7 +258,7 @@
 
         <button
           @click="nextPdfPage"
-          :disabled="pdfCurrentPage >= pdfTotalPages"
+          :disabled="pdfCurrentPage >= pdfTotalPages || isRendering"
           class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition disabled:opacity-40 flex items-center gap-1.5 cursor-pointer"
         >
           <span>Berikutnya</span>
@@ -317,7 +317,7 @@ const pdfCurrentPage = ref(1);
 const pdfTotalPages = ref(1);
 const inputPage = ref(1);
 const zoomScale = ref(1.2);
-let isRendering = false;
+const isRendering = ref(false);
 let pageRenderPending = null;
 
 // EPUB State
@@ -354,12 +354,12 @@ const handleFullscreenChange = () => {
 const renderPdfPage = async (pageNumber) => {
   if (!pdfDoc || !pdfCanvas.value) return;
 
-  if (isRendering) {
+  if (isRendering.value) {
     pageRenderPending = pageNumber;
     return;
   }
 
-  isRendering = true;
+  isRendering.value = true;
 
   try {
     const page = await pdfDoc.getPage(pageNumber);
@@ -376,7 +376,7 @@ const renderPdfPage = async (pageNumber) => {
     };
 
     await page.render(renderContext).promise;
-    isRendering = false;
+    isRendering.value = false;
 
     if (pageRenderPending !== null) {
       const pending = pageRenderPending;
@@ -385,7 +385,7 @@ const renderPdfPage = async (pageNumber) => {
     }
   } catch (err) {
     console.error('Error rendering PDF page:', err);
-    isRendering = false;
+    isRendering.value = false;
   }
 };
 

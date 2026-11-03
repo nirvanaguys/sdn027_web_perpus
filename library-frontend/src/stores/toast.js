@@ -4,6 +4,12 @@ export const toastStore = reactive({
   toasts: [],
 
   add(message, type = 'info', duration = 4000) {
+    // UI-06: Hindari toast duplikat bertumpuk saat aksi cepat
+    const existing = this.toasts.find((t) => t.message === message && t.type === type);
+    if (existing) {
+      return;
+    }
+
     const id = Date.now() + Math.random().toString(36).substring(2, 7);
     this.toasts.push({ id, message, type });
 

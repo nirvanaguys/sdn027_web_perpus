@@ -34,10 +34,17 @@ class ReadingLibraryController extends Controller
     {
         $book = Book::whereNotNull('file_path')->findOrFail($bookId);
 
-        $entry = ReadingList::firstOrCreate([
-            'user_id' => $request->user()->id,
-            'book_id' => $book->id,
-        ]);
+        try {
+            $entry = ReadingList::firstOrCreate([
+                'user_id' => $request->user()->id,
+                'book_id' => $book->id,
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            // RD-07: Tangani race condition pada unique key secara anggun
+            $entry = ReadingList::where('user_id', $request->user()->id)
+                ->where('book_id', $book->id)
+                ->firstOrFail();
+        }
 
         return response()->json([
             'success' => true,
@@ -47,9 +54,17 @@ class ReadingLibraryController extends Controller
 
     public function removeBook(Request $request, $bookId)
     {
-        ReadingList::where('user_id', $request->user()->id)
+        $deleted = ReadingList::where('user_id', $request->user()->id)
             ->where('book_id', $bookId)
             ->delete();
+
+        // RD-03: Kembalikan 404 jika tidak ada entri yang dihapus
+        if ($deleted === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Buku tidak ditemukan di Reading List Anda.',
+            ], 404);
+        }
 
         return response()->json(['success' => true]);
     }

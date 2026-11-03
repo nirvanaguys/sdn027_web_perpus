@@ -174,4 +174,58 @@ class UserManagementTest extends TestCase
         $login->assertStatus(200);
         $this->assertTrue($login->json('data.user.is_active'));
     }
+
+    public function test_admin_cannot_demote_own_role(): void
+    {
+        Sanctum::actingAs($this->admin);
+
+        $response = $this->putJson('/api/admin/users/' . $this->admin->id, [
+            'role' => 'member',
+        ]);
+
+        $response->assertStatus(422)->assertJsonPath('success', false);
+        $this->assertEquals('admin', $this->admin->fresh()->role);
+    }
+
+    public function test_deactivating_user_revokes_tokens_and_blocks_api(): void
+    {
+        $token = $this->member->createToken('test_token')->plainTextToken;
+
+        // Akses API saat aktif -> 200
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->getJson('/api/me')
+            ->assertOk();
+
+        // Admin menonaktifkan akun member
+        Sanctum::actingAs($this->admin);
+        $this->postJson('/api/admin/users/' . $this->member->id . '/set-active', [
+            'is_active' => false,
+        ])->assertOk();
+
+        // Reset auth context
+        app('auth')->forgetGuards();
+
+        // Token lama kini ditolak karena token sudah dicabut (401)
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->getJson('/api/me')
+            ->assertUnauthorized();
+
+        // Dan jika akun nonaktif mengakses request ber-token, EnsureUserIsActive memblokir 403
+        Sanctum::actingAs($this->member->fresh());
+        $this->getJson('/api/me')->assertStatus(403);
+    }
+
+    public function test_admin_reset_password_revokes_user_tokens(): void
+    {
+        $token = $this->member->createToken('test_token')->plainTextToken;
+
+        Sanctum::actingAs($this->admin);
+        $this->postJson('/api/admin/users/' . $this->member->id . '/reset-password', [
+            'password' => 'PasswordBaru123',
+            'password_confirmation' => 'PasswordBaru123',
+        ])->assertOk();
+
+        // Token lama harus sudah terhapus
+        $this->assertEquals(0, $this->member->tokens()->count());
+    }
 }

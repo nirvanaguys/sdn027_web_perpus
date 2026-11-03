@@ -10,10 +10,12 @@ class IsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || $request->user()->role !== 'admin') {
+        $user = $request->user();
+
+        if (!$user || $user->role !== 'admin' || !$user->is_active) {
             return response()->json([
                 'success' => false,
-                'message' => 'Akses ditolak. Rute ini hanya dapat diakses oleh Administrator/Pustakawan.'
+                'message' => 'Akses ditolak. Rute ini hanya dapat diakses oleh Administrator/Pustakawan yang aktif.'
             ], 403);
         }
 

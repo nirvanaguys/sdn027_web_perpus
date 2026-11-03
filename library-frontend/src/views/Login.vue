@@ -11,15 +11,9 @@
       <!-- Panel kiri: branding (tengah vertikal, sejajar kartu login) -->
       <div class="anim-fade-up hidden lg:flex flex-col justify-center self-stretch py-10 text-white">
         <div>
-        <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-50 backdrop-blur">
-          <BookOpen class="h-4 w-4 text-emerald-200" />
-          Perpustakaan Ebook Digital
-        </div>
-        <h1 class="mt-5 text-4xl xl:text-5xl font-extrabold leading-[1.08] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
+        <h1 class="text-4xl xl:text-5xl font-extrabold leading-[1.08] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
           Perpustakaan Digital
-          <span class="block bg-gradient-to-r from-[#c9ecb4] via-white to-[#d9f2c7] bg-clip-text text-transparent">
-            SDN 027 Balikpapan Utara
-          </span>
+          <span class="block">SDN 027 Balikpapan Utara</span>
         </h1>
         <p class="mt-4 max-w-md text-sm leading-relaxed text-emerald-50/90">
           Masuk untuk membaca ebook, menyimpan Reading List, dan melihat riwayat
@@ -30,15 +24,9 @@
 
       <!-- Branding ringkas untuk layar kecil (panel kiri disembunyikan di mobile) -->
       <div class="anim-fade-up lg:hidden text-white text-center">
-        <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-50 backdrop-blur">
-          <BookOpen class="h-4 w-4 text-emerald-200" />
-          Perpustakaan Ebook Digital
-        </div>
-        <h1 class="mt-4 text-3xl font-extrabold leading-tight tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
+        <h1 class="text-3xl font-extrabold leading-tight tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
           Perpustakaan Digital
-          <span class="block bg-gradient-to-r from-[#c9ecb4] via-white to-[#d9f2c7] bg-clip-text text-transparent">
-            SDN 027 Balikpapan Utara
-          </span>
+          <span class="block">SDN 027 Balikpapan Utara</span>
         </h1>
         <p class="mt-3 max-w-md mx-auto text-xs leading-relaxed text-emerald-50/90">
           Masuk untuk membaca ebook, menyimpan Reading List, dan melihat riwayat
@@ -67,7 +55,7 @@
           <div class="flex p-1 bg-slate-100 rounded-2xl mb-5" role="tablist" aria-label="Pilih mode akun">
             <button
               type="button"
-              @click="isRegister = false"
+              @click="switchMode(false)"
               class="flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer"
               :class="!isRegister ? 'bg-white text-[#1c6d00] shadow-sm ring-1 ring-[#248900]/20' : 'text-slate-500 hover:text-slate-800'"
             >
@@ -75,7 +63,7 @@
             </button>
             <button
               type="button"
-              @click="isRegister = true"
+              @click="switchMode(true)"
               class="flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer"
               :class="isRegister ? 'bg-white text-[#1c6d00] shadow-sm ring-1 ring-[#248900]/20' : 'text-slate-500 hover:text-slate-800'"
             >
@@ -92,13 +80,20 @@
                 <input
                   id="login-email"
                   v-model="email"
+                  @input="loginErrors.email = null"
                   type="email"
                   required
                   autocomplete="email"
                   placeholder="nama@email.com"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                  :aria-invalid="!!loginErrors.email"
+                  :aria-describedby="loginErrors.email ? 'login-email-err' : undefined"
+                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-sm focus:bg-white outline-none transition"
+                  :class="loginErrors.email ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200' : 'border-slate-200 focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25'"
                 />
               </div>
+              <p v-if="loginErrors.email" id="login-email-err" class="mt-1 text-xs text-rose-600 font-medium">
+                {{ Array.isArray(loginErrors.email) ? loginErrors.email[0] : loginErrors.email }}
+              </p>
             </div>
 
             <div>
@@ -108,15 +103,20 @@
                 <input
                   id="login-password"
                   v-model="password"
+                  @input="loginErrors.password = null"
                   :type="showPassword ? 'text' : 'password'"
                   required
                   autocomplete="current-password"
                   placeholder="••••••••"
-                  class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                  :aria-invalid="!!loginErrors.password"
+                  :aria-describedby="loginErrors.password ? 'login-password-err' : undefined"
+                  class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border rounded-xl text-sm focus:bg-white outline-none transition"
+                  :class="loginErrors.password ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200' : 'border-slate-200 focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25'"
                 />
                 <button
                   type="button"
                   @click="showPassword = !showPassword"
+                  :aria-pressed="showPassword"
                   :aria-label="showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
                   class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
@@ -124,6 +124,9 @@
                   <Eye v-else class="w-4 h-4" />
                 </button>
               </div>
+              <p v-if="loginErrors.password" id="login-password-err" class="mt-1 text-xs text-rose-600 font-medium">
+                {{ Array.isArray(loginErrors.password) ? loginErrors.password[0] : loginErrors.password }}
+              </p>
             </div>
 
             <button
@@ -139,11 +142,11 @@
               <ArrowRight v-if="!loading" class="w-4 h-4" />
             </button>
 
-            <div class="flex items-center justify-between pt-1">
-              <router-link to="/forgot-password" class="text-xs font-bold text-[#1c6d00] hover:underline">
+            <div class="pt-1 text-[11px] leading-relaxed text-slate-500">
+              <router-link to="/reset-password" class="font-bold text-[#1c6d00] hover:underline">
                 Lupa kata sandi?
               </router-link>
-              <span class="text-[11px] text-slate-400">Reset mandiri via NISN/NIP</span>
+              Minta tautan reset via email, atau lapor ke pustakawan SDN 027.
             </div>
           </form>
 
@@ -156,13 +159,20 @@
                 <input
                   id="reg-name"
                   v-model="regName"
+                  @input="regErrors.name = null"
                   type="text"
                   required
                   autocomplete="name"
                   placeholder="Nama Anda"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                  :aria-invalid="!!regErrors.name"
+                  :aria-describedby="regErrors.name ? 'reg-name-err' : undefined"
+                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-sm focus:bg-white outline-none transition"
+                  :class="regErrors.name ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200' : 'border-slate-200 focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25'"
                 />
               </div>
+              <p v-if="regErrors.name" id="reg-name-err" class="mt-1 text-xs text-rose-600 font-medium">
+                {{ Array.isArray(regErrors.name) ? regErrors.name[0] : regErrors.name }}
+              </p>
             </div>
 
             <div>
@@ -172,31 +182,22 @@
                 <input
                   id="reg-email"
                   v-model="regEmail"
+                  @input="regErrors.email = null"
                   type="email"
                   required
                   autocomplete="email"
                   placeholder="nama@email.com"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                  :aria-invalid="!!regErrors.email"
+                  :aria-describedby="regErrors.email ? 'reg-email-err' : undefined"
+                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-sm focus:bg-white outline-none transition"
+                  :class="regErrors.email ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200' : 'border-slate-200 focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25'"
                 />
               </div>
+              <p v-if="regErrors.email" id="reg-email-err" class="mt-1 text-xs text-rose-600 font-medium">
+                {{ Array.isArray(regErrors.email) ? regErrors.email[0] : regErrors.email }}
+              </p>
             </div>
 
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1.5" for="reg-identity">NISN / NIP</label>
-              <div class="relative">
-                <IdCard class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                <input
-                  id="reg-identity"
-                  v-model="regIdentity"
-                  type="text"
-                  required
-                  inputmode="numeric"
-                  placeholder="Siswa: NISN • Guru: NIP"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
-                />
-              </div>
-              <p class="mt-1 text-[11px] text-slate-400">Dipakai untuk reset kata sandi mandiri jika lupa.</p>
-            </div>
 
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
@@ -206,14 +207,22 @@
                   <input
                     id="reg-pass"
                     v-model="regPassword"
+                    @input="regErrors.password = null"
                     type="password"
                     required
                     minlength="8"
                     autocomplete="new-password"
                     placeholder="••••••••"
-                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                    :aria-invalid="!!regErrors.password"
+                    :aria-describedby="regErrors.password ? 'reg-pass-err' : undefined"
+                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-sm focus:bg-white outline-none transition"
+                    :class="regErrors.password ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200' : 'border-slate-200 focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25'"
                   />
                 </div>
+                <p v-if="regErrors.password" id="reg-pass-err" class="mt-1 text-xs text-rose-600 font-medium">
+                  {{ Array.isArray(regErrors.password) ? regErrors.password[0] : regErrors.password }}
+                </p>
+                <p v-else class="mt-1 text-[11px] text-slate-400">Min. 8 karakter (huruf & angka).</p>
               </div>
 
               <div>
@@ -223,14 +232,21 @@
                   <input
                     id="reg-pass2"
                     v-model="regPasswordConfirm"
+                    @input="regErrors.password_confirmation = null"
                     type="password"
                     required
                     minlength="8"
                     autocomplete="new-password"
                     placeholder="••••••••"
-                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25 outline-none transition"
+                    :aria-invalid="!!regErrors.password_confirmation"
+                    :aria-describedby="regErrors.password_confirmation ? 'reg-pass2-err' : undefined"
+                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-sm focus:bg-white outline-none transition"
+                    :class="regErrors.password_confirmation ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200' : 'border-slate-200 focus:border-[#248900]/50 focus:ring-2 focus:ring-[#248900]/25'"
                   />
                 </div>
+                <p v-if="regErrors.password_confirmation" id="reg-pass2-err" class="mt-1 text-xs text-rose-600 font-medium">
+                  {{ Array.isArray(regErrors.password_confirmation) ? regErrors.password_confirmation[0] : regErrors.password_confirmation }}
+                </p>
               </div>
             </div>
 
@@ -269,7 +285,6 @@ import {
   BookOpen,
   User,
   Mail,
-  IdCard,
   Lock,
   Eye,
   EyeOff,
@@ -286,15 +301,32 @@ const loading = ref(false);
 // Login state
 const email = ref('');
 const password = ref('');
+const loginErrors = ref({});
 
 // Register state
 const regName = ref('');
 const regEmail = ref('');
-const regIdentity = ref('');
 const regPassword = ref('');
 const regPasswordConfirm = ref('');
+const regErrors = ref({});
+
+const switchMode = (mode) => {
+  isRegister.value = mode;
+  loginErrors.value = {};
+  regErrors.value = {};
+};
 
 const handleLogin = async () => {
+  loginErrors.value = {};
+  if (!email.value) {
+    loginErrors.value.email = 'Alamat email wajib diisi.';
+    return;
+  }
+  if (!password.value) {
+    loginErrors.value.password = 'Kata sandi wajib diisi.';
+    return;
+  }
+
   loading.value = true;
   try {
     const res = await api.post('/login', {
@@ -314,7 +346,15 @@ const handleLogin = async () => {
       router.push('/');
     }
   } catch (err) {
-    const msg = err.response?.data?.message || 'Login gagal. Periksa kembali email dan kata sandi Anda.';
+    const data = err.response?.data;
+    if (data?.errors) {
+      loginErrors.value = data.errors;
+    } else if (err.response?.status === 401 || err.response?.status === 422) {
+      loginErrors.value = {
+        email: data?.message || 'Kredensial yang diberikan tidak cocok dengan data kami.',
+      };
+    }
+    const msg = data?.message || 'Login gagal. Periksa kembali email dan kata sandi Anda.';
     toastStore.error(msg);
   } finally {
     loading.value = false;
@@ -322,8 +362,31 @@ const handleLogin = async () => {
 };
 
 const handleRegister = async () => {
+  regErrors.value = {};
+  let hasError = false;
+
+  if (!regName.value) {
+    regErrors.value.name = 'Nama lengkap wajib diisi.';
+    hasError = true;
+  }
+  if (!regEmail.value) {
+    regErrors.value.email = 'Alamat email wajib diisi.';
+    hasError = true;
+  }
+  if (!regPassword.value) {
+    regErrors.value.password = 'Kata sandi wajib diisi.';
+    hasError = true;
+  } else if (regPassword.value.length < 8) {
+    regErrors.value.password = 'Kata sandi minimal harus 8 karakter.';
+    hasError = true;
+  }
   if (regPassword.value !== regPasswordConfirm.value) {
-    toastStore.error('Konfirmasi kata sandi tidak cocok!');
+    regErrors.value.password_confirmation = 'Konfirmasi kata sandi tidak cocok!';
+    hasError = true;
+  }
+
+  if (hasError) {
+    toastStore.error('Mohon periksa dan lengkapi data pendaftaran Anda.');
     return;
   }
 
@@ -332,7 +395,6 @@ const handleRegister = async () => {
     const res = await api.post('/register', {
       name: regName.value,
       email: regEmail.value,
-      identity_number: regIdentity.value,
       password: regPassword.value,
       password_confirmation: regPasswordConfirm.value,
     });
@@ -342,7 +404,11 @@ const handleRegister = async () => {
     toastStore.success(`Pendaftaran berhasil! Selamat bergabung, ${user.name}.`);
     router.push(route.query.redirect || '/');
   } catch (err) {
-    const msg = err.response?.data?.message || 'Registrasi gagal. Mohon periksa kembali data Anda.';
+    const data = err.response?.data;
+    if (data?.errors) {
+      regErrors.value = data.errors;
+    }
+    const msg = data?.message || 'Registrasi gagal. Mohon periksa kembali data Anda.';
     toastStore.error(msg);
   } finally {
     loading.value = false;

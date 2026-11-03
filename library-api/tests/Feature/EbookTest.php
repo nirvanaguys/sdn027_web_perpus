@@ -274,4 +274,40 @@ class EbookTest extends TestCase
         $this->assertDatabaseMissing('books', ['id' => $book->id]);
         Storage::disk('local')->assertMissing($filePath);
     }
+
+    /**
+     * Ringkasan katalog di /api/books dihitung atas SELURUH hasil filter,
+     * bukan hanya baris di halaman yang sedang tampil.
+     */
+    public function test_catalog_summary_counts_all_matching_rows_not_just_the_page(): void
+    {
+        foreach (range(1, 6) as $i) {
+            Book::create([
+                'title'       => 'Buku ' . $i,
+                'author'      => 'Penulis',
+                'publisher'   => 'Penerbit',
+                'isbn'        => '978-000000001' . $i,
+                'category'    => $i <= 3 ? 'Sains' : 'Umum',
+                'file_path'   => $i <= 2 ? 'ebooks/buku-' . $i . '.pdf' : null,
+                'file_format' => $i % 2 === 0 ? 'pdf' : 'epub',
+                'file_size'   => 1024,
+            ]);
+        }
+
+        $this->getJson('/api/books?per_page=2')
+            ->assertOk()
+            ->assertJsonPath('meta.counts.total', 6)
+            ->assertJsonPath('meta.counts.pdf', 3)
+            ->assertJsonPath('meta.counts.epub', 3)
+            ->assertJsonPath('meta.counts.ready', 2)
+            ->assertJsonCount(2, 'data.data')
+            ->assertJsonPath('meta.categories', ['Sains', 'Umum']);
+
+        // Filter format menyempitkan halaman, bukan ringkasan PDF/EPUB.
+        $this->getJson('/api/books?format=pdf')
+            ->assertOk()
+            ->assertJsonPath('data.total', 3)
+            ->assertJsonPath('meta.counts.pdf', 3)
+            ->assertJsonPath('meta.counts.epub', 3);
+    }
 }
