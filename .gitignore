@@ -19,6 +19,9 @@ Thumbs.db
 /library-api/database/*.sqlite
 /library-api/database/*.sqlite-journal
 
+# Paket serah-terima (dibuat ulang saat rilis, jangan masuk git)
+/perpustakaan-*.zip
+
 # Frontend (Vue 3 / Vite)
 /library-frontend/node_modules/
 /library-frontend/dist/
