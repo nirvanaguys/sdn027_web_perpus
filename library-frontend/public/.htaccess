@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Semua rute ditangani Vue Router: kalau file/folder tidak ada,
+  # arahkan ke index.html agar refresh di /read/1 atau /history tidak 404.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
