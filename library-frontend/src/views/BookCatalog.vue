@@ -44,7 +44,7 @@
                 type="search"
                 placeholder="Cari judul, penulis, penerbit, atau ISBN…"
                 aria-label="Cari ebook"
-                class="w-full bg-transparent px-2.5 py-2.5 text-sm text-slate-900 placeholder-slate-500 outline-none"
+                class="w-full min-w-0 appearance-none border-0 bg-transparent px-2.5 py-2.5 text-sm text-slate-900 placeholder-slate-500 shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus:shadow-none [&::-webkit-search-cancel-button]:hidden"
               />
               <button
                 v-if="searchQuery"
