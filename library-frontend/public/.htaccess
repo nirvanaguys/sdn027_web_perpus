@@ -1,3 +1,9 @@
+<IfModule mod_mime.c>
+  # Hostinger tidak memetakan .mjs, jadi dikirim sebagai text/plain dan worker
+  # pdf.js ditolak browser. Aturan ini ikut ter-copy ke dist/ saat build.
+  AddType text/javascript .mjs
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
