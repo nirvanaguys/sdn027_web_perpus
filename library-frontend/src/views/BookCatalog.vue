@@ -8,11 +8,17 @@
           alt=""
           class="hero-bg-zoom h-full w-full object-cover"
         />
-        <div class="absolute inset-0 bg-gradient-to-r from-[#08170c]/92 via-[#0e2f14]/78 to-[#14532d]/55"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#08170c]/70 via-transparent to-transparent"></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-[#08170c]/92 via-[#0e2f14]/78 to-[#14532d]/55"
+        ></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-[#08170c]/70 via-transparent to-transparent"
+        ></div>
       </div>
 
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <div
+        class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20"
+      >
         <div class="max-w-3xl space-y-4 sm:space-y-5">
           <!-- Headline -->
           <h1
@@ -26,8 +32,10 @@
           <p
             class="anim-fade-up-2 max-w-xl text-sm sm:text-base leading-relaxed text-emerald-50/90"
           >
-            Mari membangun dunia mulai dari membaca buku! Cari koleksi PDF dan
-            EPUB, simpan favoritmu, lalu baca langsung tanpa antre.
+            Website resmi perpustakaan digital SDN 027 Balikpapan Utara. Berisi
+            banyak koleksi ebook yang dapat digunakan siswa dan guru sebagai
+            sarana pembelajaran atau hanya sekedar membaca buku yang disukai
+            para murid dan guru
           </p>
 
           <!-- Prominent Search Bar -->
@@ -44,6 +52,7 @@
                 type="search"
                 placeholder="Cari judul, penulis, penerbit, atau ISBN…"
                 aria-label="Cari ebook"
+                style="outline: none"
                 class="w-full min-w-0 appearance-none border-0 bg-transparent px-2.5 py-2.5 text-sm text-slate-900 placeholder-slate-500 shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus:shadow-none [&::-webkit-search-cancel-button]:hidden"
               />
               <button
@@ -61,37 +70,40 @@
                 {{ pagination.total }} Ebook
               </span>
             </div>
-            <div class="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-emerald-50/85">
-              <span class="uppercase tracking-widest text-emerald-100/70">Populer:</span>
-              <button type="button" @click="searchQuery=''; handleSearch()" class="rounded-full border border-white/25 bg-white/10 px-3 py-1 backdrop-blur transition hover:bg-white/20 cursor-pointer">Semua</button>
-              <span class="rounded-full border border-white/25 bg-white/10 px-3 py-1">PDF: {{ counts.pdf }}</span>
-              <span class="rounded-full border border-white/25 bg-white/10 px-3 py-1">EPUB: {{ counts.epub }}</span>
+            <div
+              class="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-emerald-50/85"
+            >
+              <span class="uppercase tracking-widest text-emerald-100/70"
+                >Populer:</span
+              >
+              <button
+                type="button"
+                @click="
+                  searchQuery = '';
+                  handleSearch();
+                "
+                class="rounded-full border border-white/25 bg-white/10 px-3 py-1 backdrop-blur transition hover:bg-white/20 cursor-pointer"
+              >
+                Semua
+              </button>
+              <span
+                class="rounded-full border border-white/25 bg-white/10 px-3 py-1"
+                >PDF: {{ counts.pdf }}</span
+              >
+              <span
+                class="rounded-full border border-white/25 bg-white/10 px-3 py-1"
+                >EPUB: {{ counts.epub }}</span
+              >
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Stat strip -->
-      <div class="relative border-t border-white/15 bg-black/25 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 grid grid-cols-3 gap-3 text-center sm:text-left">
-          <div class="flex items-center justify-center gap-2.5 sm:justify-start">
-            <Library class="h-4 w-4 text-emerald-200" />
-            <p class="text-xs sm:text-sm text-emerald-50"><strong class="font-extrabold text-white">{{ pagination.total }}</strong> koleksi terdaftar</p>
-          </div>
-          <div class="flex items-center justify-center gap-2.5">
-            <Zap class="h-4 w-4 text-emerald-200" />
-            <p class="text-xs sm:text-sm text-emerald-50">Baca <strong class="font-extrabold text-white">langsung online</strong></p>
-          </div>
-          <div class="flex items-center justify-center gap-2.5 sm:justify-end">
-            <ShieldCheck class="h-4 w-4 text-emerald-200" />
-            <p class="text-xs sm:text-sm text-emerald-50">Aman untuk <strong class="font-extrabold text-white">siswa & guru</strong></p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Main Content: Catalog Grid & Filters -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8 pb-16 relative z-10">
+    <main
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8 pb-16 relative z-10"
+    >
       <!-- Filter Bar -->
       <div
         class="rounded-2xl border border-slate-200/80 bg-white/95 p-3 sm:p-4 shadow-[0_20px_45px_-30px_rgba(12,36,18,0.4)] backdrop-blur flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
@@ -119,7 +131,9 @@
 
         <!-- Dropdown Filter: Category -->
         <div class="flex items-center gap-2">
-          <span class="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#eef9e6] text-[#1c6d00]">
+          <span
+            class="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#eef9e6] text-[#1c6d00]"
+          >
             <Filter class="w-4 h-4 shrink-0" />
           </span>
           <label class="sr-only" for="kategori">Filter kategori</label>
@@ -147,7 +161,8 @@
             </option>
           </select>
           <p class="hidden xl:block text-xs text-slate-400 whitespace-nowrap">
-            Menampilkan <strong class="text-slate-700">{{ pagination.total }}</strong> Ebook
+            Menampilkan
+            <strong class="text-slate-700">{{ pagination.total }}</strong> Ebook
           </p>
         </div>
       </div>
@@ -242,10 +257,16 @@
               </div>
             </div>
             <!-- Soft overlay -->
-            <div class="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/45 to-transparent"></div>
-            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 to-transparent"></div>
+            <div
+              class="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/45 to-transparent"
+            ></div>
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 to-transparent"
+            ></div>
 
-            <div class="absolute inset-x-0 top-0 flex items-start justify-between p-3">
+            <div
+              class="absolute inset-x-0 top-0 flex items-start justify-between p-3"
+            >
               <!-- Format Badge (PDF / EPUB / Katalog) -->
               <span
                 v-if="book.has_ebook && book.file_format"
@@ -257,7 +278,7 @@
                 "
               >
                 <FileText class="w-3.5 h-3.5" />
-                <span>{{ (book.file_format || '').toUpperCase() }}</span>
+                <span>{{ (book.file_format || "").toUpperCase() }}</span>
               </span>
               <span
                 v-else
@@ -285,7 +306,9 @@
             </div>
 
             <!-- ISBN + size -->
-            <div class="absolute inset-x-0 bottom-0 flex items-center justify-between p-3">
+            <div
+              class="absolute inset-x-0 bottom-0 flex items-center justify-between p-3"
+            >
               <span
                 class="rounded-md bg-black/45 px-2 py-1 font-mono text-[11px] text-white/90 backdrop-blur"
               >
@@ -363,7 +386,11 @@
                     : 'Simpan ke Reading List'
                 "
                 class="rounded-xl border p-2.5 transition cursor-pointer"
-                :class="savedBookIds.has(book.id) ? 'border-[#248900]/30 bg-[#eef9e6] text-[#1c6d00]' : 'border-slate-200 text-slate-500 hover:border-[#248900]/30 hover:text-[#1c6d00] hover:bg-[#eef9e6]'"
+                :class="
+                  savedBookIds.has(book.id)
+                    ? 'border-[#248900]/30 bg-[#eef9e6] text-[#1c6d00]'
+                    : 'border-slate-200 text-slate-500 hover:border-[#248900]/30 hover:text-[#1c6d00] hover:bg-[#eef9e6]'
+                "
               >
                 <Bookmark
                   class="h-4 w-4"
@@ -394,9 +421,16 @@
       </div>
 
       <!-- UI-01: Pagination Navigasi Katalog Ebook -->
-      <div v-if="pagination.last_page > 1" class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm border border-slate-200/80">
+      <div
+        v-if="pagination.last_page > 1"
+        class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm border border-slate-200/80"
+      >
         <p class="text-xs sm:text-sm text-slate-500">
-          Menampilkan halaman <strong class="text-slate-800">{{ pagination.current_page }}</strong> dari <strong class="text-slate-800">{{ pagination.last_page }}</strong> (total {{ pagination.total }} ebook)
+          Menampilkan halaman
+          <strong class="text-slate-800">{{ pagination.current_page }}</strong>
+          dari
+          <strong class="text-slate-800">{{ pagination.last_page }}</strong>
+          (total {{ pagination.total }} ebook)
         </p>
         <div class="flex items-center gap-2">
           <button
@@ -441,7 +475,11 @@
         >
           <div
             class="flex gap-4 p-6 text-white relative overflow-hidden"
-            :class="selectedDetailBook.cover_url ? 'bg-[#0e2f14]' : getCardGradient(selectedDetailBook.id)"
+            :class="
+              selectedDetailBook.cover_url
+                ? 'bg-[#0e2f14]'
+                : getCardGradient(selectedDetailBook.id)
+            "
           >
             <img
               v-if="selectedDetailBook.cover_url"
@@ -450,34 +488,42 @@
               class="h-44 w-32 sm:h-52 sm:w-36 shrink-0 rounded-xl object-cover shadow-lg ring-1 ring-white/30"
             />
             <div class="min-w-0 flex-1">
-            <div class="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl" aria-hidden="true"></div>
-            <button
-              @click="selectedDetailBook = null"
-              aria-label="Tutup detail buku"
-              class="absolute top-4 right-4 p-1.5 rounded-full bg-black/20 hover:bg-black/30 text-white transition cursor-pointer"
-            >
-              <X class="w-5 h-5" />
-            </button>
-            <span
-              v-if="selectedDetailBook.has_ebook && selectedDetailBook.file_format"
-              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-black/30 mb-3"
-            >
-              <FileText class="w-3.5 h-3.5" />
-              <span>Format: {{ selectedDetailBook.file_format.toUpperCase() }}</span>
-            </span>
-            <span
-              v-else
-              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-black/30 mb-3"
-            >
-              <Library class="w-3.5 h-3.5" />
-              <span>Format: Belum Ada Berkas</span>
-            </span>
-            <h2 id="detail-book-title" class="text-xl font-bold leading-snug">
-              {{ selectedDetailBook.title }}
-            </h2>
-            <p class="text-sm text-white/80 mt-1">
-              Karya {{ selectedDetailBook.author }}
-            </p>
+              <div
+                class="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl"
+                aria-hidden="true"
+              ></div>
+              <button
+                @click="selectedDetailBook = null"
+                aria-label="Tutup detail buku"
+                class="absolute top-4 right-4 p-1.5 rounded-full bg-black/20 hover:bg-black/30 text-white transition cursor-pointer"
+              >
+                <X class="w-5 h-5" />
+              </button>
+              <span
+                v-if="
+                  selectedDetailBook.has_ebook && selectedDetailBook.file_format
+                "
+                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-black/30 mb-3"
+              >
+                <FileText class="w-3.5 h-3.5" />
+                <span
+                  >Format:
+                  {{ selectedDetailBook.file_format.toUpperCase() }}</span
+                >
+              </span>
+              <span
+                v-else
+                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-black/30 mb-3"
+              >
+                <Library class="w-3.5 h-3.5" />
+                <span>Format: Belum Ada Berkas</span>
+              </span>
+              <h2 id="detail-book-title" class="text-xl font-bold leading-snug">
+                {{ selectedDetailBook.title }}
+              </h2>
+              <p class="text-sm text-white/80 mt-1">
+                Karya {{ selectedDetailBook.author }}
+              </p>
             </div>
           </div>
 
@@ -589,11 +635,9 @@ import {
   Eye,
   Library,
   RotateCcw,
-  ShieldCheck,
   FileText,
   CheckCircle2,
   AlertCircle,
-  Zap,
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
@@ -731,7 +775,9 @@ const fetchReadingList = async () => {
 
 const toggleReadingList = async (book) => {
   if (!book.has_ebook) {
-    toastStore.warning("Buku tanpa berkas ebook tidak dapat disimpan ke Reading List.");
+    toastStore.warning(
+      "Buku tanpa berkas ebook tidak dapat disimpan ke Reading List.",
+    );
     return;
   }
 

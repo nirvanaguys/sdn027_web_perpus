@@ -31,3 +31,6 @@ Thumbs.db
 /library-frontend/.vite-temp/
 /library-frontend/logs
 /library-frontend/*.log
+
+# arsip build frontend
+library-frontend/dist.zip

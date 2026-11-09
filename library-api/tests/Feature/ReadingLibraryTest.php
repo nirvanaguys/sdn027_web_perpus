@@ -89,7 +89,7 @@ class ReadingLibraryTest extends TestCase
         ]);
 
         $response->assertCreated()
-            ->assertJsonPath('data.cover_url', fn ($url) => str_starts_with($url, '/storage/book-covers/'))
+            ->assertJsonPath('data.cover_url', fn ($url) => str_starts_with($url, '/covers/book-covers/'))
             ->assertJsonMissingPath('data.file_path');
 
         $book = Book::firstOrFail();

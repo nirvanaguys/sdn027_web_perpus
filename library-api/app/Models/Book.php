@@ -61,7 +61,7 @@ class Book extends Model
 
     public function getCoverUrlAttribute(): ?string
     {
-        return $this->cover_image ? '/storage/' . $this->cover_image : null;
+        return $this->cover_image ? '/covers/' . $this->cover_image : null;
     }
 
     public function readingHistories(): HasMany
