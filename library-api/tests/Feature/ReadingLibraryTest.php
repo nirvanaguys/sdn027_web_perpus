@@ -62,6 +62,26 @@ class ReadingLibraryTest extends TestCase
             ->assertJsonPath('data.0.book.id', $book->id);
     }
 
+    public function test_reading_list_paginates_only_when_per_page_is_sent(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
+        foreach (range(1, 3) as $i) {
+            ReadingList::create([
+                'user_id' => $user->id,
+                'book_id' => $this->createEbook()->id,
+            ]);
+        }
+
+        $this->getJson('/api/reading-list?per_page=2')
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('total', 3)
+            ->assertJsonPath('last_page', 2);
+
+        $this->getJson('/api/reading-list')->assertJsonCount(3, 'data');
+    }
+
     public function test_reading_list_rejects_books_without_ebook_files(): void
     {
         $user = User::factory()->create();

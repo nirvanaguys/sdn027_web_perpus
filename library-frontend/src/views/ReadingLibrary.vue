@@ -47,7 +47,7 @@
       </div>
       <div class="mt-5 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
         <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-slate-200">
-          <BookOpen class="h-3.5 w-3.5 text-[#1c6d00]" /> {{ items.length }} {{ isHistory ? 'riwayat bacaan' : 'ebook tersimpan' }}
+          <BookOpen class="h-3.5 w-3.5 text-[#1c6d00]" /> {{ pagination.total }} {{ isHistory ? 'riwayat bacaan' : 'ebook tersimpan' }}
         </span>
         <router-link
           to="/"
@@ -142,6 +142,30 @@
         </div>
       </li>
     </ul>
+    <div
+      v-if="pagination.last_page > 1"
+      class="mt-6 flex items-center justify-between text-xs text-slate-500"
+    >
+      <span>Halaman {{ pagination.current_page }} dari {{ pagination.last_page }}</span>
+      <div class="flex gap-2">
+        <button
+          type="button"
+          @click="fetchItems(pagination.current_page - 1)"
+          :disabled="pagination.current_page <= 1"
+          class="rounded-xl border border-slate-200 px-3 py-2 font-semibold disabled:opacity-40"
+        >
+          Sebelumnya
+        </button>
+        <button
+          type="button"
+          @click="fetchItems(pagination.current_page + 1)"
+          :disabled="pagination.current_page >= pagination.last_page"
+          class="rounded-xl border border-slate-200 px-3 py-2 font-semibold disabled:opacity-40"
+        >
+          Berikutnya
+        </button>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -155,14 +179,22 @@ import { toastStore } from "../stores/toast";
 const route = useRoute();
 const items = ref([]);
 const loading = ref(false);
+const pagination = ref({ current_page: 1, last_page: 1, total: 0 });
 const isHistory = computed(() => route.path === "/history");
 
-const fetchItems = async () => {
+const fetchItems = async (page = 1) => {
   loading.value = true;
   try {
     const endpoint = isHistory.value ? "/reading-history" : "/reading-list";
-    const response = await api.get(endpoint);
+    const response = await api.get(endpoint, {
+      params: { per_page: 12, page },
+    });
     items.value = response.data.data || [];
+    pagination.value = {
+      current_page: response.data.current_page || 1,
+      last_page: response.data.last_page || 1,
+      total: response.data.total || 0,
+    };
   } catch (error) {
     toastStore.error("Gagal memuat koleksi bacaan.");
   } finally {
@@ -173,7 +205,9 @@ const fetchItems = async () => {
 const removeBook = async (bookId) => {
   try {
     await api.delete(`/reading-list/${bookId}`);
-    items.value = items.value.filter((entry) => entry.book_id !== bookId);
+    // Mundur satu halaman kalau halaman ini jadi kosong
+    const page = pagination.value.current_page;
+    fetchItems(items.value.length === 1 && page > 1 ? page - 1 : page);
     // UI-10: Beritahu tab lain via localStorage
     localStorage.setItem("reading-list-updated", Date.now().toString());
     toastStore.success("Ebook dihapus dari Reading List.");
@@ -212,5 +246,5 @@ onBeforeUnmount(() => {
   window.removeEventListener("visibilitychange", handleVisibility);
 });
 
-watch(() => route.path, fetchItems);
+watch(() => route.path, () => fetchItems());
 </script>

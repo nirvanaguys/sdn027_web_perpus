@@ -12,22 +12,28 @@ class ReadingLibraryController extends Controller
 {
     public function history(Request $request)
     {
-        $history = ReadingHistory::with('book')
+        return $this->respond(ReadingHistory::with('book')
             ->where('user_id', $request->user()->id)
-            ->orderByDesc('last_read_at')
-            ->get();
-
-        return response()->json(['success' => true, 'data' => $history]);
+            ->orderByDesc('last_read_at'), $request);
     }
 
     public function readingList(Request $request)
     {
-        $readingList = ReadingList::with('book')
+        return $this->respond(ReadingList::with('book')
             ->where('user_id', $request->user()->id)
-            ->latest()
-            ->get();
+            ->latest(), $request);
+    }
 
-        return response()->json(['success' => true, 'data' => $readingList]);
+    // ponytail: tanpa ?per_page tetap kirim semua (dipakai katalog untuk menandai buku tersimpan)
+    private function respond($query, Request $request)
+    {
+        if (! $request->has('per_page')) {
+            return response()->json(['success' => true, 'data' => $query->get()]);
+        }
+
+        $perPage = max(1, min((int) $request->query('per_page'), 100));
+
+        return response()->json(['success' => true] + $query->paginate($perPage)->toArray());
     }
 
     public function saveBook(Request $request, $bookId)
