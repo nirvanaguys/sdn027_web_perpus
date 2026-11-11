@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Book;
+use App\Models\ReadingHistory;
 use App\Models\ReadingList;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -44,13 +45,15 @@ class ReadingLibraryTest extends TestCase
         ]);
     }
 
-    public function test_reading_file_requires_authentication_and_records_history(): void
+    public function test_reading_file_is_public_and_history_needs_login(): void
     {
         Storage::fake('local');
         Storage::disk('local')->put('ebooks/sample.pdf', '%PDF sample');
         $book = $this->createEbook();
 
-        $this->getJson("/api/books/{$book->id}/read")->assertUnauthorized();
+        // Tamu boleh membaca file dan tidak membuat riwayat.
+        $this->get("/api/books/{$book->id}/read")->assertOk();
+        $this->assertSame(0, ReadingHistory::count());
 
         $user = User::factory()->create();
         $this->actingAs($user, 'sanctum')

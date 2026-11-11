@@ -20,7 +20,7 @@ const routes = [
     path: "/read/:id",
     name: "EbookReader",
     component: EbookReader,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: false },
   },
   {
     path: "/history",

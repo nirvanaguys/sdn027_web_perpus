@@ -20,9 +20,10 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
 
-// Katalog ebook publik (hanya metadata)
+// Katalog & baca ebook publik (tanpa login)
 Route::get('/books', [BookController::class, 'index']);
 Route::get('/books/{id}', [BookController::class, 'show']);
+Route::get('/books/{id}/read', [BookController::class, 'read'])->middleware('throttle:60,1');
 
 /*
 |--------------------------------------------------------------------------
@@ -38,8 +39,6 @@ Route::middleware(['auth:sanctum', 'ensure_active'])->group(function () {
         ]);
     });
 
-    // Akses membaca isi berkas ebook (wajib login)
-    Route::get('/books/{id}/read', [BookController::class, 'read']);
     Route::get('/reading-history', [ReadingLibraryController::class, 'history']);
     Route::get('/reading-list', [ReadingLibraryController::class, 'readingList']);
     Route::post('/reading-list/{bookId}', [ReadingLibraryController::class, 'saveBook']);

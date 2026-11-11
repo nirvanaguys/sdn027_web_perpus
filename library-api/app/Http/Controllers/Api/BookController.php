@@ -111,10 +111,13 @@ class BookController extends Controller
             ], 404);
         }
 
-        ReadingHistory::updateOrCreate(
-            ['user_id' => $request->user()->id, 'book_id' => $book->id],
-            ['last_read_at' => now()],
-        );
+        // Tamu boleh membaca; riwayat hanya dicatat bila login.
+        if ($user = $request->user()) {
+            ReadingHistory::updateOrCreate(
+                ['user_id' => $user->id, 'book_id' => $book->id],
+                ['last_read_at' => now()],
+            );
+        }
 
         $format = strtolower($book->file_format ?: pathinfo($book->file_path, PATHINFO_EXTENSION));
         $contentType = match ($format) {

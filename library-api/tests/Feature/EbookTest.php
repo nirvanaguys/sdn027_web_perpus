@@ -35,9 +35,9 @@ class EbookTest extends TestCase
     }
 
     /**
-     * Tamu/pengguna belum login DITOLAK membaca file ebook (401 Unauthorized).
+     * Tamu DIIZINKAN membaca file ebook (perpustakaan terbuka).
      */
-    public function test_unauthenticated_user_cannot_access_ebook_file(): void
+    public function test_unauthenticated_user_can_access_ebook_file(): void
     {
         Storage::fake('local');
         $fakeFile = UploadedFile::fake()->create('sample.pdf', 100, 'application/pdf');
@@ -54,9 +54,9 @@ class EbookTest extends TestCase
             'file_size'   => 102400,
         ]);
 
-        $response = $this->getJson('/api/books/' . $book->id . '/read');
+        $response = $this->get('/api/books/' . $book->id . '/read');
 
-        $response->assertStatus(401);
+        $response->assertOk();
     }
 
     /**

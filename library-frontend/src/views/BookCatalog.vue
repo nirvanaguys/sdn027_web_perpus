@@ -747,17 +747,6 @@ const handleReadBook = (book) => {
   }
 
   selectedDetailBook.value = null;
-
-  if (!authStore.isAuthenticated()) {
-    toastStore.warning(
-      "Silakan masuk (login) terlebih dahulu untuk membaca ebook.",
-    );
-    return router.push({
-      path: "/login",
-      query: { redirect: `/read/${book.id}` },
-    });
-  }
-
   router.push(`/read/${book.id}`);
 };
 
